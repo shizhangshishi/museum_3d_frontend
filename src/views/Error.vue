@@ -1,10 +1,12 @@
 <template>
-  <div>top bar</div>
+  <v-container>
+    error
+  </v-container>
 </template>
 
 <script>
 export default {
-  name: "TopBar"
+  name: "Error"
 }
 </script>
 
