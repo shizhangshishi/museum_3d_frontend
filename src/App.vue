@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="app">
     <!-- 全局 overlay 以及 snackbar，用来跨页面为用户提示消息 -->
     <!-- 使用的方法：通过 this.$root.$children[0] 在其它组件中获得 App.vue 组件的对象 -->
     <v-overlay :value="overlay" z-index="500">
@@ -39,5 +39,7 @@ export default {
 };
 </script>
 <style lang="scss">
+.app {
 
+}
 </style>
