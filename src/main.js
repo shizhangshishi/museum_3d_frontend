@@ -7,6 +7,8 @@ import router from './router'
 
 Vue.config.productionTip = false
 
+const axios = require('axios');
+
 new Vue({
   vuetify,
   store,
