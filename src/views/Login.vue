@@ -56,6 +56,7 @@
 <script>
 import TopBar from "@/components/common/TopBar";
 import Footer from "@/components/common/Footer";
+import Code from '@/constants/code/resCode';
 
 export default {
   name: "Login",
@@ -65,6 +66,7 @@ export default {
   },
   data () {
     return {
+      app:this.$root.$children[0],
       loginForm: {
         username: "",
         password: ""
@@ -75,8 +77,30 @@ export default {
   },
   methods: {
     login () {
-      this.$store.commit("login", "12223");
-      this.$router.replace({path: "/"});
+      this.$axios.post("/login", this.loginForm)
+        .catch(() => {})
+        .then(res => {
+          if (res)
+          {
+            if (res.data.responseCode === Code.SUCCESS)
+            {
+              this.app.notify(res.data.responseMessage, "success");
+              this.$store.commit("login", res.data.responseBody.token);
+
+              setTimeout(() => {
+                this.$router.replace("/");
+              }, 1500);
+            }
+            else
+            {
+              this.app.notify(res.data.responseMessage, "error");
+            }
+
+            return;
+          }
+
+          this.app.notify("服务器错误，请重试", "error");
+        });
     }
   }
 }
