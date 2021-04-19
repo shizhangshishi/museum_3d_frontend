@@ -28,7 +28,7 @@
             注册日期
           </v-col>
           <v-col>
-            {{ userDetail.date }}
+            {{ userDetail.createDate }}
           </v-col>
         </v-row>
         <v-row>
@@ -39,27 +39,11 @@
             {{ userDetail.phone }}
           </v-col>
         </v-row>
-        <v-row class="grey lighten-4">
-          <v-col>
-            邮箱
-          </v-col>
-          <v-col>
-            <v-text-field v-model="detailForm.email"></v-text-field>
-          </v-col>
-        </v-row>
-        <v-row class="grey lighten-4">
-          <v-col>
-            个性签名
-          </v-col>
-          <v-col>
-            <v-text-field v-model="detailForm.signature"></v-text-field>
-          </v-col>
-        </v-row>
         <v-row>
           <v-col>
             <v-btn
               color="info"
-              @click="update()">
+              @click="updateDetail()">
               更新信息
             </v-btn>
           </v-col>
@@ -88,7 +72,7 @@
           注册日期
         </v-col>
         <v-col>
-          {{ userDetail.date }}
+          {{ userDetail.createDate }}
         </v-col>
       </v-row>
       <v-row>
@@ -99,56 +83,91 @@
           {{ userDetail.phone }}
         </v-col>
       </v-row>
-      <v-row>
-        <v-col>
-          邮箱
-        </v-col>
-        <v-col>
-          {{ userDetail.email }}
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          个性签名
-        </v-col>
-        <v-col>
-          {{ userDetail.signature }}
-        </v-col>
-      </v-row>
     </v-container>
   </v-container>
 </v-app>
 </template>
 
 <script>
+import Code from '@/constants/code/resCode';
+
 export default {
   name: "Detail",
   props: ['parent'],
   data () {
     return {
+      app:this.$root.$children[0],
       userDetail: {
-        username: "newton0431",
-        nickname: "牛顿",
-        date: "2021-04-11",
-        phone: "13138929019",
-        email: "newton0431@outlook.com",
-        signature: "愿明天更美好"
+        username: "",
+        nickname: "",
+        createDate: "",
+        phone: ""
       },
       detailForm: {
-        username: "newton0431",
-        nickname: "牛顿",
-        date: "2021-04-11",
-        phone: "13138929019",
-        email: "newton0431@outlook.com",
-        signature: "愿明天更美好"
+        nickname: ""
       },
       isEditting: false
     }
   },
   methods: {
-    update () {
+    getDetail () {
+      console.log(this.$store.state.token)
+      this.$axios.get("/user/detail")
+        .catch(() => {})
+        .then(res => {
+          if (res)
+          {
+            if (res.data.responseCode === Code.SUCCESS)
+            {
+              this.userDetail = {
+                username: res.data.responseBody.user.username,
+                nickname: res.data.responseBody.user.nickname,
+                createDate: res.data.responseBody.user.createDate,
+                phone: res.data.responseBody.user.phone
+              };
+              this.detailForm = {
+                nickname: res.data.responseBody.user.nickname
+              }
+            }
+            else
+            {
+              this.app.notify(res.data.responseMessage, "error");
+            }
 
+            return;
+          }
+
+          this.app.notify("服务器错误，请重试", "error");
+        });
+    },
+    updateDetail () {
+      this.$axios.put("/user/detail", this.detailForm)
+        .catch(() => {})
+        .then(res => {
+          if (res)
+          {
+            if (res.data.responseCode === Code.SUCCESS)
+            {
+              this.app.notify(res.data.responseMessage, "success");
+              
+              setTimeout(() => {
+                this.$router.go();
+              }, 1500);
+            }
+            else
+            {
+              this.app.notify(res.data.responseMessage, "error");
+            }
+
+            return;
+          }
+
+          this.app.notify("服务器错误，请重试", "error");
+        });
     }
+  },
+  mounted () {
+    this.getDetail();
   }
 }
 </script>
