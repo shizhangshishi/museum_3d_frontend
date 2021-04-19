@@ -9,6 +9,18 @@ Vue.config.productionTip = false
 
 const axios = require('axios');
 
+axios.interceptors.request.use(
+  config => {
+    if(store.state.token) {
+      config.headers.Authorization = `Bearer ${store.state.token}`;
+    }
+    return config
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
+
 new Vue({
   vuetify,
   store,
