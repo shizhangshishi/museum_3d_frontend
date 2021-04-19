@@ -3,11 +3,13 @@ import VueRouter from 'vue-router'
 import store from '../store'
 
 import Home from '@/views/Home.vue'
-import Login from "@/views/Login";
-import Register from "@/views/Register";
-import Info from "@/views/Info";
-import Museum from "@/views/Museum";
-import Error from "@/views/Error";
+import Login from '@/views/Login';
+import Register from '@/views/Register';
+import Info from '@/views/Info';
+import Museum from '@/views/Museum';
+import Error from '@/views/Error';
+
+import Test from '@/views/Test'
 
 Vue.use(VueRouter)
 
@@ -47,6 +49,11 @@ const routes = [
     path: '/error/:id',
     name: 'Error',
     component: Error
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: Test
   }
 ]
 
