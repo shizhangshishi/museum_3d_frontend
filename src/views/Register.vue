@@ -17,7 +17,7 @@
               <v-text-field
                 v-model="registerForm.phone"
                 label="手机号码"
-                :rules="[v => !!v || '手机号不能为空']"
+                :rules="[v => (!!v && v.length === 11) || '手机号长度不正确，应为11位']"
                 required>
               </v-text-field>
             </v-col>
@@ -27,7 +27,7 @@
               <v-text-field
                 v-model="registerForm.username"
                 label="用户名"
-                :rules="[v => !!v || '用户名不能为空']"
+                :rules="[v => (!!v&& v.length >= 6 && v.length <= 20) || '用户名长度不正确，应在6-20个字符之间']"
                 required>
               </v-text-field>
             </v-col>
@@ -87,10 +87,11 @@ export default {
   },
   data () {
     return {
+      app:this.$root.$children[0],
       registerForm: {
-        phone: "",
         username: "",
-        password: ""
+        password: "",
+        phone: ""
       },
       registerFormValid: false,
       showPassword: false,
@@ -99,11 +100,28 @@ export default {
   },
   methods: {
     register () {
-      this.$axios.post("/api/register", this.registerForm)
+      this.$axios.post("/user/register", this.registerForm)
         .catch(() => {})
         .then(res => {
-          this.$store.commit("login", "12223");
-          //this.$router.replace({path: "/"});
+          if (res)
+          {
+            if (res.data.responseCode === 2000)
+            {
+              this.app.notify(res.data.responseMessage, "success");
+
+              setTimeout(() => {
+                this.$router.replace("/login");
+              }, 1500);
+            }
+            else
+            {
+              this.app.notify(res.data.responseMessage, "error");
+            }
+
+            return;
+          }
+
+          this.app.notify("服务器错误，请重试", "error");
         });
     }
   }
