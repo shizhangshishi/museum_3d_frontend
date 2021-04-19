@@ -41,7 +41,7 @@ _axios.interceptors.response.use(
   function(error) {
     // Do something with response error
     if (error) {
-      if (error.response.status === 405) {
+      if (error.response.status === 401 || error.response.status === 403) {
         // 身份认证有误
         // 清除token 如果不是register/login, 跳转至login
         store.commit('logout');
