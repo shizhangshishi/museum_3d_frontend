@@ -17,7 +17,7 @@
               <v-text-field
                 v-model="registerForm.phone"
                 label="手机号码"
-                :rules="[v => (!!v && v.length === 11) || '手机号长度不正确，应为11位']"
+                :rules="[v => (!!v && v.match(/[0-9]{11}/g)) || '手机号长度不正确，应为11位数字']"
                 required>
               </v-text-field>
             </v-col>
@@ -27,7 +27,7 @@
               <v-text-field
                 v-model="registerForm.username"
                 label="用户名"
-                :rules="[v => (!!v&& v.length >= 6 && v.length <= 20) || '用户名长度不正确，应在6-20个字符之间']"
+                :rules="[v => (!!v && v.match(/[0-9A-z]{6,20}/g)) || '用户名长度不正确，应为在6-20个字符之间的英文字母与数字']"
                 required>
               </v-text-field>
             </v-col>
@@ -37,7 +37,7 @@
               <v-text-field
                 v-model="registerForm.password"
                 label="密码"
-                :rules="[v => !!v || '密码不能为空']"
+                :rules="[v => (!!v && v.match(/[0-9A-z]{6,20}/g)) || '密码长度不正确，应为在6-20个字符之间的英文字母与数字']"
                 required
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showPassword ? 'text' : 'password'"
