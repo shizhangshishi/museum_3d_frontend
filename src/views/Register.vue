@@ -78,6 +78,7 @@
 <script>
 import TopBar from "@/components/common/TopBar";
 import Footer from "@/components/common/Footer";
+import Code from '@/constants/code/resCode';
 
 export default {
   name: "Register",
@@ -100,12 +101,12 @@ export default {
   },
   methods: {
     register () {
-      this.$axios.post("/user/register", this.registerForm)
+      this.$axios.post("/register", this.registerForm)
         .catch(() => {})
         .then(res => {
           if (res)
           {
-            if (res.data.responseCode === 2000)
+            if (res.data.responseCode === Code.SUCCESS)
             {
               this.app.notify(res.data.responseMessage, "success");
 
