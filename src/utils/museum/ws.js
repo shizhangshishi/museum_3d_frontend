@@ -10,18 +10,16 @@ export default class WS
 {
     constructor(username)
     {
+        this.username = username;
         this.connection = new WebSocket(`ws://localhost:8080/websocket/${username}`);
-        this.connection.onopen = event => {
-            this.connection.send('something');
-        }
         
         this.setOnMessage();
         console.log("连接WS")
     }
 
-    send(message)
+    send(object)
     {
-        this.connection.send(message);
+        this.connection.send(JSON.stringify(object));
     }
 
     setOnMessage()
@@ -35,6 +33,7 @@ export default class WS
     {
         this.send({
             messageType: MessageTypes.chat,
+            fromUsername: this.username,
             toUsername: toUsername,
             text: text
         });
