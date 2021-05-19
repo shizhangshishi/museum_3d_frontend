@@ -1,6 +1,7 @@
 <template>
   <v-container class="museum">
     <div id="three-canvas"></div>
+    <Room></Room>
   </v-container>
 </template>
 
@@ -114,9 +115,11 @@ const keys = {
 
 // Museum
 import WS from '@/utils/museum/ws.js';
+import Room from "@/components/museum/Room";
 
 export default {
   name: 'Museum',
+  components: {Room},
   props: {
     msg: String
   },
