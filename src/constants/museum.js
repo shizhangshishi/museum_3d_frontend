@@ -1,0 +1,21 @@
+const FLOOR_WIDTH = 3000;
+const FLOOR_DEPTH = 2000;
+const FLOOR_HEIGHT= 100;
+
+const ROOM_LENGTH = 2400;
+const ROOM_WIDTH = 1600;
+const ROOM_HEIGHT = 1000;
+
+const WALL_DEPTH = 50;
+
+export default {
+    FLOOR_WIDTH,
+    FLOOR_DEPTH,
+    FLOOR_HEIGHT,
+
+    ROOM_LENGTH,
+    ROOM_WIDTH,
+    ROOM_HEIGHT,
+
+    WALL_DEPTH
+}

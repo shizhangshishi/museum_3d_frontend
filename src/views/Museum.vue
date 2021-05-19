@@ -1,12 +1,19 @@
 <template>
-  <v-container>
-    Museum
-  </v-container>
+<v-container>
+  <Room :roomId = roomId></Room>
+</v-container>
 </template>
 
 <script>
+import Room from "@/components/museum/Room";
 export default {
-  name: "Museum"
+  name: "Museum",
+  components: {Room},
+  data(){
+    return{
+      roomId: 0
+    }
+  }
 }
 </script>
 
