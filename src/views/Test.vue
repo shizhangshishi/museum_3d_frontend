@@ -3,6 +3,7 @@
 </template>
 <script>
 
+
 import Room from "@/components/museum/Room";
 export default {
   name: 'CustomerThree',
