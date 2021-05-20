@@ -1,6 +1,6 @@
 <template>
-  <div id="container">
-  </div>
+  <v-container id="container">
+  </v-container>
 </template>
 
 <script>
@@ -9,8 +9,9 @@ import "three/examples/js/controls/OrbitControls"
 
 import * as MUSEUM from '@/constants/museum'
 import * as LIGHT from '@/js/museum/light'
-import * as FLOOR from '@/js/museum/room/floor'
-import * as WALL from '@/js/museum/room/wall'
+import * as EXHIBITIONS from '@/constants/exhibitions'
+
+import {Room} from "@/js/museum/room/room";
 
 export default {
   props: ["roomId"],
@@ -21,7 +22,9 @@ export default {
       scene: null,
       camera: null,
       renderer: null,
-      controls: null
+      controls: null,
+
+      exhibitions: EXHIBITIONS.EXHIBITIONS[this.roomId - 1]
     }
   },
   mounted() {
@@ -42,8 +45,12 @@ export default {
       this.initControls();
     },
     buildRoom(){
-      this.buildFloor();
-      this.buildWalls();
+      let room = new Room(MUSEUM.ROOM_LENGTH, MUSEUM.ROOM_WIDTH, MUSEUM.ROOM_HEIGHT);
+      room.buildFloor(MUSEUM.FLOOR_WIDTH, MUSEUM.FLOOR_HEIGHT, MUSEUM.FLOOR_DEPTH);
+      room.buildWalls(MUSEUM.WALL_DEPTH);
+      let exhibitionHeight = MUSEUM.ROOM_HEIGHT * 0.4;
+      room.addWallsExhibitions(this.exhibitions, exhibitionHeight, EXHIBITIONS.EXHIBITION_DEPTH);
+      this.scene.add(room.obj);
     },
     animate(){
       requestAnimationFrame(this.animate);
@@ -63,7 +70,7 @@ export default {
     },
     initCamera(k){
       this.camera = new THREE.PerspectiveCamera(45, k, 0.1, 10000);
-      this.camera.position.set(-200, 3600, 1000);
+      this.camera.position.set(0, 3600, 1000);
       this.camera.lookAt(new THREE.Vector3(0, 0, 0));
     },
     initControls(){
@@ -79,44 +86,6 @@ export default {
       let ambientLight = LIGHT.getAmbientLight(0, 0, 0);
       this.scene.add(ambientLight);
     },
-    buildFloor(){
-      let floor = FLOOR.getFloor(MUSEUM.default.FLOOR_WIDTH, MUSEUM.default.FLOOR_HEIGHT, MUSEUM.default.FLOOR_DEPTH);
-      this.scene.add(floor);
-    },
-    buildWalls(){
-      let length, width, height, depth;
-      depth = MUSEUM.default.WALL_DEPTH;
-
-      length = MUSEUM.default.ROOM_LENGTH;
-      width = MUSEUM.default.ROOM_WIDTH;
-      height = MUSEUM.default.ROOM_HEIGHT;
-
-      this.buildBehindWall(length, height, depth, width / 2 );
-      this.buildFrontWall(length , height, depth, width / 2);
-      this.buildLeftWall(depth, height, width + depth, length / 2);
-      this.buildRightWall(depth, height, width + depth, length / 2);
-    },
-    buildBehindWall(width, height, depth, offset){
-
-      let wall = WALL.getBehindWall(width, height, depth, offset);
-      this.scene.add(wall);
-    },
-    buildFrontWall(width, height, depth, offset){
-      let wall = WALL.getFrontWall(width, height, depth, offset);
-      this.scene.add(wall);
-    },
-    buildLeftWall(width, height, depth, offset){
-
-      let wall = WALL.getLeftWall(width, height, depth, offset);
-      this.scene.add(wall);
-    },
-    buildRightWall(width, height, depth, offset){
-      let wall = WALL.getRightWall(width, height, depth, offset);
-      this.scene.add(wall);
-    },
-    addExhibitions(){
-
-    }
   }
 }
 </script>

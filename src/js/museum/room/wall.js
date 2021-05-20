@@ -1,34 +1,25 @@
 import * as THREE from "three"
+import {Exhibition} from "@/js/museum/room/exhitbition";
 
-
-function getWall(width, height, depth){
-    let gem = new THREE.BoxGeometry(width, height, depth );
+export function Wall(width, height, depth){
+    this.width = width;
+    this.height = height;
+    this.depth = depth;
+    this.mesh = this.initMesh();
+}
+Wall.prototype.initMesh = function (){
+    let gem = new THREE.BoxGeometry(this.width, this.height, this.depth );
     let mat = new THREE.MeshPhongMaterial({color: 0xafc0ca})
-    let wall = new THREE.Mesh(gem, mat);
-    wall.position.y += height / 2;
-    return wall;
+    let mesh = new THREE.Mesh(gem, mat);
+    return mesh;
 }
-export function getLeftWall(width, height, depth, offset){
-    let wall = getWall(width, height, depth);
-    wall.name = "左墙";
-    wall.position.x -= offset;
-    return wall;
+Wall.prototype.setPosition = function (x, y, z){
+    this.mesh.position.x = x;
+    this.mesh.position.y = y;
+    this.mesh.position.z = z;
 }
-export function getBehindWall(width, height, depth, offset){
-    let wall = getWall(width, height, depth);
-    wall.name = "后墙";
-    wall.position.z -= offset;
-    return wall;
-}
-export function getRightWall(width, height, depth, offset){
-    let wall = getWall(width, height, depth);
-    wall.name = "右墙";
-    wall.position.x += offset;
-    return wall;
-}
-export function getFrontWall(width, height, depth, offset){
-    let wall = getWall(width, height, depth);
-    wall.name = "后墙";
-    wall.position.z += offset;
-    return wall;
+Wall.prototype.rotate = function (xRad, yRad, zRad){
+    this.mesh.rotation.x += xRad;
+    this.mesh.rotation.y += yRad;
+    this.mesh.rotation.z += zRad;
 }

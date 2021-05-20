@@ -11,7 +11,7 @@ export default {
   components: {Room},
   data(){
     return{
-      roomId: 0
+      roomId: 1
     }
   }
 }
