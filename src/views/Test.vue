@@ -5,6 +5,10 @@
 
 
 import Room from "@/components/museum/Room";
+import "three-orbitcontrols";
+import * as THREE from "three"
+
+
 export default {
   name: 'CustomerThree',
   components: {Room},
