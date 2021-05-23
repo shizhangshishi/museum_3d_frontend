@@ -3,6 +3,10 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 
 // 键盘映射
 const keys = {
+  a: 65,
+  w: 87,
+  d: 68,
+  s: 83,
   left: 37,
   up: 38,
   right: 39,
@@ -17,13 +21,13 @@ const models = {
 
 // 初始位置
 const INIT_POSITION_X = 0;
-const INIT_POSITION_Y = 50;
+const INIT_POSITION_Y = 0;
 const INIT_POSITION_Z = 0;
 
 // 相机偏移
 const INIT_CAMERA_DELTAX = 0;
-const INIT_CAMERA_DELTAY = 1500;
-const INIT_CAMERA_DELTAZ = 1000;
+const INIT_CAMERA_DELTAY = 800;
+const INIT_CAMERA_DELTAZ = 600;
 
 // 初始朝向
 const INIT_ROTATION_Y = 0;
@@ -116,15 +120,19 @@ export default class Player
       };
       switch (key)
       {
+        case (keys.a):
         case (keys.left):
           delta.x = -MOVE_STEP;
           break;
+        case (keys.w):
         case (keys.up):
           delta.z = -MOVE_STEP;
           break;
+        case (keys.d):
         case (keys.right):
           delta.x = MOVE_STEP;
           break;
+        case (keys.s):
         case (keys.down):
           delta.z = MOVE_STEP;
           break;

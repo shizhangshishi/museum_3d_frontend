@@ -10,7 +10,7 @@ module.exports = {
       }
     },
     "host": "localhost",
-    "port": 80
+    "port": 80,
   },
   "configureWebpack": {
     "devtool": "source-map"
