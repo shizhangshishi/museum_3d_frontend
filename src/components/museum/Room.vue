@@ -5,24 +5,33 @@
 
 <script>
 import * as THREE from 'three'
-import "three/examples/js/controls/OrbitControls"
+import "three-orbitcontrols/OrbitControls"
 
 import * as MUSEUM from '@/constants/museum'
 import * as LIGHT from '@/js/museum/light'
 import * as EXHIBITIONS from '@/constants/exhibitions'
 
 import {Room} from "@/js/museum/room/room";
+import Player from "@/js/museum/object/player";
+
+import WS from '@/utils/museum/ws.js';
+
+import Code from '@/constants/code/resCode';
 
 export default {
   props: ["roomId"],
   name: "Room",
   data(){
     return{
+      username: "",
+      ws: null,
+
       container:null,
       scene: null,
       camera: null,
       renderer: null,
-      controls: null,
+    
+      player: null,
 
       exhibitions: EXHIBITIONS.EXHIBITIONS[this.roomId - 1]
     }
@@ -30,7 +39,10 @@ export default {
   mounted() {
     this.init();
     this.buildRoom();
+
     this.animate();
+
+    this.setUpWS();
   },
   methods:{
     init(){
@@ -40,9 +52,9 @@ export default {
 
       this.initRenderer(width, height);
       this.initScene();
-      this.initCamera(width / height);
       this.initLight();
-      this.initControls();
+      this.player = new Player(this.scene, "astronaut", width/height);
+      this.camera = this.player.getCamera();
     },
     buildRoom(){
       let room = new Room(MUSEUM.ROOM_LENGTH, MUSEUM.ROOM_WIDTH, MUSEUM.ROOM_HEIGHT);
@@ -54,7 +66,6 @@ export default {
     },
     animate(){
       requestAnimationFrame(this.animate);
-      this.controls.update();
       this.renderer.render(this.scene, this.camera);
     },
     initRenderer(width, height){
@@ -68,23 +79,36 @@ export default {
       this.scene = new THREE.Scene();
       this.scene.fog = new THREE.Fog(this.scene.background, 3000, 6000);
     },
-    initCamera(k){
-      this.camera = new THREE.PerspectiveCamera(45, k, 0.1, 10000);
-      this.camera.position.set(0, 3600, 1000);
-      this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-    },
-    initControls(){
-      this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement );
-      this.controls.enableDamping = true;
-      this.controls.dampingFactor = 0.5;
-      this.controls.update();
-    },
     initLight(){
       let directionLight = LIGHT.getDirectionLight(0, 100, 0);
       this.scene.add(directionLight);
 
       let ambientLight = LIGHT.getAmbientLight(0, 0, 0);
       this.scene.add(ambientLight);
+    },
+    setUpWS () {
+      this.$axios.get("/user/detail")
+        .catch(() => {})
+        .then(res => {
+          if (res)
+          {
+            if (res.data.responseCode === Code.SUCCESS)
+            {
+              this.username = res.data.responseBody.user.username;
+            }
+            else
+            {
+              this.app.notify(res.data.responseMessage, "error");
+            }
+            
+            this.ws = new WS(this.username);
+            this.player.status.ws = this.ws;
+
+            return;
+          }
+
+          this.app.notify("服务器错误，请重试", "error");
+        });
     },
   }
 }

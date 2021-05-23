@@ -1,11 +1,12 @@
 <template>
-  <v-container class="museum">
+  <v-container class="museum" style="overflow-y:hidden">
     <div id="three-canvas"></div>
-    <Room></Room>
+    <Room roomId=1></Room>
   </v-container>
 </template>
 
 <script>
+/*
 // 测试WebSocket使用的代码，有待改写
 import * as THREE from 'three'
 
@@ -112,7 +113,7 @@ const keys = {
   down: 40,
   enter: 13
 }
-
+*/
 // Museum
 import WS from '@/utils/museum/ws.js';
 import Room from "@/components/museum/Room";
@@ -125,11 +126,12 @@ export default {
   },
   data () {
     return {
-      status: status,
-      ws: null
+      //status: status,
+      //ws: null
     }
   },
   methods: {
+    /*
     move(delta)
     {
       mesh.position.x += delta.x;
@@ -162,8 +164,10 @@ export default {
         }
       }
     }
+    */
   },
   mounted () {
+    /*
     init();
 
     this.ws = new WS('wewewe'); // test name
@@ -197,10 +201,18 @@ export default {
         this.move(delta);
       }
     }
+    */
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+</style>
+
+<style>
+html{
+  overflow-x:hidden;
+  overflow-y:hidden;
+}
 </style>
