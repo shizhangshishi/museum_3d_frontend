@@ -132,6 +132,7 @@ export default {
       this.player = new Player(this.scene, "astronaut", width/height);
       this.camera = this.player.getCamera();
       this.initControls();
+      window.addEventListener('mousewheel', this.onMousewheel, false);
       window.addEventListener('resize', this.onResize, false);
     },
     buildRoom(){
@@ -240,17 +241,24 @@ export default {
     setCameraPos(){
       this.camera.position.set(this.cameraPos.x, this.cameraPos.y, this.cameraPos.z);
     },
+    */
     setTargetPos(){
-      this.controls.target = new THREE.Vector3(Number(this.targetPos.x), Number(this.targetPos.y), Number(this.targetPos.z));
+      this.controls.target = new THREE.Vector3(
+        Number(this.player.status.x), 
+        Number(this.player.status.y), 
+        Number(this.player.status.z)
+      );
       this.controls.update();
     },
-    */
 
+    onMousewheel(){
+      this.setTargetPos();
+    },
     onResize(){
       this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-      this.controls.update();
+      this.setTargetPos();
     },
     onClick(event){
       let intersects = this.getIntersects(event);
