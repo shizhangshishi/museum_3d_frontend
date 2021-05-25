@@ -8,10 +8,11 @@ const MessageTypes = {
 
 export default class WS
 {
-    constructor(username)
+    constructor(username, token)
     {
+        console.log(token);
         this.username = username;
-        this.connection = new WebSocket(`ws://localhost:8080/websocket/${username}`);
+        this.connection = new WebSocket(`ws://localhost:8080/websocket`, [token]);
         
         this.setOnMessage();
         console.log("连接WS")
