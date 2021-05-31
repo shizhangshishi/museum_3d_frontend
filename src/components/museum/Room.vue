@@ -228,7 +228,7 @@ export default {
               this.app.notify(res.data.responseMessage, "error");
             }
             
-            this.ws = new WS(this.username, this.$store.state.token);
+            this.ws = new WS(this.username);
             this.player.status.ws = this.ws;
 
             return;
