@@ -43,7 +43,7 @@ const MOVE_STEP = 10;
 // 模型加载器
 const loader = new FBXLoader();
 
-export default class Player
+export class Player
 {
   constructor(scene, modelName, aspect)
   {
