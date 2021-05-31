@@ -1,3 +1,4 @@
+// 消息类型
 const MessageTypes = {
     "online": 1,
     "offline": 2,
@@ -6,6 +7,7 @@ const MessageTypes = {
     "position": 5
 }
 
+// Position类型消息的子类型
 const SubTypes = {
     "my": 1,
     "all": 2,
@@ -83,8 +85,7 @@ export default class WS
                 // 如果本地状态没有锁定，则将其更新为收到的状态信息，之后锁定不再接受更新
                 if (!this.environment.block)
                 {
-                    this.environment.status.friends = data.status.friends;
-                    this.environment.status.items = data.status.items;
+                    this.environment.sync(data.status.friends, data.status.items);
                     this.environment.block = true;
                 }
                 break;

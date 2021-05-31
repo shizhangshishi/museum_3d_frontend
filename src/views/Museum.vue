@@ -107,7 +107,7 @@ export default {
       window.addEventListener('mousewheel', this.onMousewheel, false);
       window.addEventListener('resize', this.onResize, false);
 
-      this.environment = new Environment();
+      this.environment = new Environment(this.scene);
     },
     buildMuseum(){
       this.museum = new Museum(MUSEUM_CONFIG)

@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+
 // 默认物品映射
 const defaultItems = {
   door1: {
@@ -14,6 +17,11 @@ const defaultItems = {
   }
 };
 
+// 模型地址映射
+const models = {
+    astronaut: "/models/object/player/astronaut.fbx"
+}
+
 // 初始位置
 const INIT_POSITION_X = 0;
 const INIT_POSITION_Y = 0;
@@ -22,22 +30,30 @@ const INIT_POSITION_Z = 0;
 // 初始朝向
 const INIT_ROTATION_Y = 0;
 
+// 初始放缩
+const INIT_SCALE_X = 0.1;
+const INIT_SCALE_Y = 0.1;
+const INIT_SCALE_Z = 0.1;
+
+// 模型加载器
+const loader = new FBXLoader();
+
 export class Environment
 {
-  constructor()
+  constructor(scene)
   {
-    this.init();
+    this.init(scene);
     this.block = false;
   }
 
-  init()
+  init(scene)
   {
     this.status = {
       ws: null,
+      scene: scene,
       friends: {},
       items: {},
-      friendObjects: {},
-      itemObjects: {}
+      friendObjects: {}
     };
 
     this.loadDefaultItems();
@@ -48,32 +64,96 @@ export class Environment
     this.status.items = defaultItems;
   }
 
-  addFriend(name)
+  addFriend(username)
   {
-    this.status.friends[name] = {
+    // 新建状态
+    this.status.friends[username] = {
       x: INIT_POSITION_X,
       y: INIT_POSITION_Y,
       z: INIT_POSITION_Z,
       rotationY: INIT_ROTATION_Y
     };
+
+    // 创建模型
+    this.initFriend(username, () => {
+      this.updateModel(username);
+    });
   }
 
-  removeFriend(name)
+  removeFriend(username)
   {
-    delete this.status.friends[name];
+    // 删除状态
+    delete this.status.friends[username];
+
+    // 删除模型
+    delete this.status.friendObjects[username];
   }
 
-  updateFriend(name, position)
+  updateFriend(username, position)
   {
-    console.log(name);
-    if (this.status.friends[name] !== undefined)
+    console.log(username);
+    if (this.status.friends[username] !== undefined)
     {
-      this.status.friends[name] = {
+      // 更新状态
+      this.status.friends[username] = {
         x: position.x,
         y: position.y,
         z: position.z,
         rotationY: position.rotationY
       };
+
+      // 更新模型
+      this.updateModel(username);
     }
+  }
+
+  sync(friends, items)
+  {
+    // 同步其它玩家和物品信息
+    this.status.friends = friends;
+    this.status.items = items;
+  
+    this.status.friendObjects = {};
+    for (let username in this.status.friends)
+    {
+      // 为每个其他玩家创建模型
+      this.initFriend(username, () => {
+        this.updateModel(username);
+      });
+    }
+  }
+
+  initFriend(username, callback)
+  {
+    // 载入角色模型
+    loader.load(
+      models["astronaut"],
+      root => {
+          this.status.scene.add(root);
+          let friendObject = root;
+
+          friendObject.scale.set(INIT_SCALE_X, INIT_SCALE_Y, INIT_SCALE_Z);
+          this.status.friendObjects[username] = friendObject;
+
+          callback();
+      },
+      (xhr) => {
+          console.log('friend: ' + username + ' ---- ' + (xhr.loaded / xhr.total * 100) + '% loaded')
+      },
+      (error) => {
+          console.log(error);
+      }
+    );
+  }
+
+  updateModel(username)
+  {
+    // 更新指定一名玩家模型的位置
+    this.status.friendObjects[username].position.x = this.status.friends[username].x;
+    this.status.friendObjects[username].position.y = this.status.friends[username].y;
+    this.status.friendObjects[username].position.z = this.status.friends[username].z;
+
+    // 更新指定一名玩家模型的朝向
+    this.status.friendObjects[username].rotation.y = this.status.friends[username].rotationY;
   }
 }
