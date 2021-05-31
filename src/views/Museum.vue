@@ -34,6 +34,7 @@ import {MUSEUM_CONFIG} from "@/constants/museum/museum";
 
 import {Museum} from "@/js/museum/museum";
 import {Player} from "@/js/museum/object/player";
+import {Environment} from "@/js/museum/object/environment";
 
 import WS from '@/utils/museum/ws.js';
 
@@ -63,6 +64,7 @@ export default {
       renderer: null,
 
       player: null,
+      environment: null,
 
       museum: null,
       person: null,
@@ -105,6 +107,7 @@ export default {
       window.addEventListener('mousewheel', this.onMousewheel, false);
       window.addEventListener('resize', this.onResize, false);
 
+      this.environment = new Environment();
     },
     buildMuseum(){
       this.museum = new Museum(MUSEUM_CONFIG)
@@ -171,8 +174,9 @@ export default {
               this.app.notify(res.data.responseMessage, "error");
             }
 
-            this.ws = new WS(this.username);
+            this.ws = new WS(this.username, this.player, this.environment);
             this.player.status.ws = this.ws;
+            this.environment.status.ws = this.ws;
 
             return;
           }

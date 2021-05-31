@@ -195,7 +195,7 @@ export class Player
   {
     if (this.status.ws !== null)
     {
-      this.status.ws.sendPosition({
+      this.status.ws.sendMyPosition({
         x: this.status.x,
         y: this.status.y,
         z: this.status.z,
