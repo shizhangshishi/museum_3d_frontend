@@ -135,7 +135,7 @@ export default {
     },
     initScene(){
       this.scene = new THREE.Scene();
-      this.scene.fog = new THREE.Fog(this.scene.background, 3000, 6000);
+      // this.scene.fog = new THREE.Fog(this.scene.background, 3000, 6000);
     },
     /*
     initCamera(k){
