@@ -1,218 +1,251 @@
 <template>
-  <v-container class="museum" style="overflow-y:hidden">
-    <div id="three-canvas"></div>
-    <Room roomId=1></Room>
+  <v-container>
+    <v-container id="container">
+      <BtnArea  :showSetting.sync="showSetting" :showMap.sync="showMap"></BtnArea>
+
+      <Setting v-if="showSetting"
+               :showSetting.sync="showSetting"
+      ></Setting>
+
+      <Map v-if="showMap"
+           :showMap.sync="showMap"
+      ></Map>
+
+      <Exhibition v-if="showExhibition"
+                  :exhibition="exhibition"
+                  :showExhibition.sync="showExhibition"
+      ></Exhibition>
+      <Npc v-if="showNpc"
+           :showNpc.sync="showNpc"
+      ></Npc>
+      <Chat v-if="showChat"
+            :showChat.sync="showChat"
+      ></Chat>
+    </v-container>
   </v-container>
 </template>
 
 <script>
-/*
-// 测试WebSocket使用的代码，有待改写
-import * as THREE from 'three'
+import * as THREE from "three"
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import * as LIGHT from '@/js/museum/light'
+import {MUSEUM_CONFIG} from "@/constants/museum/museum";
 
-let camera, scene, renderer;
-let geometry, material, mesh, objectGeometry, objectMaterial, objectMesh, enemyGeometry, enemyMaterial, enemyMesh;
 
-function init() {
-	scene = new THREE.Scene();
+import {Museum} from "@/js/museum/museum";
+import {Player} from "@/js/museum/object/player";
 
-  // camera
-	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 10 );
-  camera.position.x = 2;
-  camera.position.y = 0;
-	camera.position.z = 1;
-  let center = new THREE.Vector3();
-  camera.up = new THREE.Vector3(0, 0, 1);
-  camera.lookAt(center);
-
-  // light
-  const light = new THREE.PointLight( 0xffffff, 1, 100 );
-  light.position.set( 50, 50, 50 );
-  scene.add( light );
-  const hemisphereLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
-  scene.add( hemisphereLight );
-
-  // player
-	geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
-	material = new THREE.MeshPhongMaterial({color: 0xff0000});
-
-	mesh = new THREE.Mesh( geometry, material );
-	scene.add( mesh );
-
-  // object
-	objectGeometry = new THREE.BoxGeometry( 5, 5, 0.1 );
-	objectMaterial = new THREE.MeshNormalMaterial();
-
-	objectMesh = new THREE.Mesh( objectGeometry, objectMaterial );
-  objectMesh.position.z = -1;
-	scene.add( objectMesh );
-  
-  // enemy
-	enemyGeometry = new THREE.BoxGeometry( 0.3, 0.3, 0.3 );
-	enemyMaterial = new THREE.MeshPhongMaterial({color: 0xff00ff});
-
-	enemyMesh = new THREE.Mesh( enemyGeometry, enemyMaterial );
-  enemyMesh.position.x = -0.6;
-  enemyMesh.position.y = -0.4;
-	scene.add( enemyMesh );
-
-  // rendering
-	renderer = new THREE.WebGLRenderer( { antialias: true } );
-	renderer.setSize( window.innerWidth * 0.5, window.innerHeight * 0.5 );
-	renderer.setAnimationLoop( animations['1'] );
-  renderer.render( scene, camera );
-  document.getElementById('three-canvas').appendChild( renderer.domElement );
-	//document.body.appendChild( renderer.domElement );
-
-}
-
-const animations = {
-  0: () => {},
-  1: () => {
-    enemyMesh.rotation.x += 0.005;
-    enemyMesh.rotation.y += 0.01;
-
-    renderer.render( scene, camera );
-  }
-}
-
-let status = {
-  distance: 0,
-  allowHit: false,
-  enemyHp: 1000000,
-  hitCount: 0,
-  alive: true
-};
-
-function comeNearEnemy (delta) {
-  status.distance = Math.sqrt(Math.pow(mesh.position.x + delta.x - enemyMesh.position.x, 2) 
-    + Math.pow(mesh.position.y + delta.y - enemyMesh.position.y, 2));
-    
-  console.log(status.distance);
-  if (status.distance < 0.5)
-  {
-    status.allowHit = true;
-    if (status.distance < 0.3)
-    {
-      // cannot be too near
-      return false;
-    }
-  }
-  else
-  {
-    status.allowHit = false;
-  }
-
-  return true;
-}
-
-const keys = {
-  left: 37,
-  up: 38,
-  right: 39,
-  down: 40,
-  enter: 13
-}
-*/
-// Museum
 import WS from '@/utils/museum/ws.js';
-import Room from "@/components/museum/Room";
+
+import Code from '@/constants/code/resCode';
+import Exhibition from "@/components/museum/Exhibition";
+import BtnArea from "@/components/museum/BtnArea";
+import Setting from "@/components/museum/Setting";
+import Map from "@/components/museum/Map";
+import Npc from "@/components/museum/Npc";
+import Chat from "@/components/museum/Chat";
+
+
 
 export default {
-  name: 'Museum',
-  components: {Room},
-  props: {
-    msg: String
-  },
-  data () {
-    return {
-      //status: status,
-      //ws: null
+  components: {Chat, Npc, Map, Setting, BtnArea, Exhibition},
+  name: "Museum",
+  data(){
+    return{
+      username: "",
+      ws: null,
+
+      container:null,
+      scene: null,
+
+      camera: null,
+
+      renderer: null,
+
+      player: null,
+
+      museum: null,
+      person: null,
+
+      npcSet: null,
+      visitorSet:null,
+
+      exhibition: null,
+
+      showSetting: false,
+      showMap: false,
+      showExhibition: false,
+      showNpc: false,
+      showChat: false
+
     }
   },
-  methods: {
-    /*
-    move(delta)
-    {
-      mesh.position.x += delta.x;
-      mesh.position.y += delta.y;
-      renderer.render( scene, camera );
+  mounted() {
 
-      this.ws.sendPosition({
-        x: mesh.position.x,
-        y: mesh.position.y
-      });
+    this.init();
+    this.buildMuseum();
+
+    this.buildPerson();
+    this.animate();
+
+    this.setUpWS();
+  },
+  methods:{
+    init(){
+      this.container = document.getElementById("container");
+      let width = this.container.clientWidth;
+      let height = this.container.clientHeight;
+
+      this.initRenderer(width, height);
+      this.initScene();
+      this.initLight();
+      this.player = new Player(this.scene, "astronaut", width/height);
+      this.camera = this.player.getCamera();
+      this.initControls();
+      window.addEventListener('mousewheel', this.onMousewheel, false);
+      window.addEventListener('resize', this.onResize, false);
+
     },
-    hitEnemy()
-    {
-      if (this.status.alive && this.status.allowHit)
-      {
-        this.status.hitCount++;
-        let damage = Math.floor(Math.random() * 100000);
-        if (this.status.enemyHp > damage)
-        {
-          this.status.enemyHp -= damage;
-        }
-        else
-        {
-          this.status.enemyHp = 0;
-          this.status.alive = false;
-          enemyMaterial.color.setRGB(0.7, 0.7, 0.7);
-          renderer.setAnimationLoop( animations['0'] );
+    buildMuseum(){
+      this.museum = new Museum(MUSEUM_CONFIG)
+      this.scene.add(this.museum);
+    },
+    buildPerson(){
+      this.buildNPC();
+      this.buildVisitor();
+    },
+    buildNPC(){
 
-          this.ws.sendChatMessageToAll(`我击杀了BOSS，攻击次数为${this.status.hitCount}`);
-        }
-      }
-    }
-    */
-  },
-  mounted () {
+    },
+    buildVisitor(){
+
+    },
+    animate(){
+      requestAnimationFrame(this.animate);
+      this.renderer.render(this.scene, this.camera);
+    },
+    initRenderer(width, height){
+      this.renderer = new THREE.WebGLRenderer({antialias: true});
+      this.renderer.setSize(width, height);
+      this.renderer.setClearColor(0x4682B4,1.0);
+      this.renderer.shadowMap.enabled = true;
+      let dom = this.renderer.domElement;
+      dom.addEventListener("click", this.onClick, false);
+      this.container.appendChild(dom);
+    },
+    initScene(){
+      this.scene = new THREE.Scene();
+      // this.scene.fog = new THREE.Fog(this.scene.background, 3000, 6000);
+    },
     /*
-    init();
-
-    this.ws = new WS('wewewe'); // test name
-
-    document.onkeydown = () => {
-      let key = window.event.keyCode;
-      let delta = {
-        x: 0,
-        y: 0
-      };
-      switch (key)
-      {
-        case (keys.left):
-          delta.y = -0.05;
-          break;
-        case (keys.up):
-          delta.x = -0.05;
-          break;
-        case (keys.right):
-          delta.y = 0.05;
-          break;
-        case (keys.down):
-          delta.x = 0.05;
-          break;
-        case (keys.enter):
-          this.hitEnemy()
-          break;
-      }
-      if (comeNearEnemy(delta))
-      {
-        this.move(delta);
-      }
-    }
+    initCamera(k){
+      this.camera = new THREE.PerspectiveCamera(45, k, 1, 10000);
+      this.cameraPos = new THREE.Vector3(0, this.roomConfig.innerScale.height * 3.2, this.roomConfig.innerScale.depth);
+      this.camera.position.set(this.cameraPos.x, this.cameraPos.y, this.cameraPos.z);
+    },
     */
+    initControls(){
+      this.controls = new OrbitControls(this.camera, this.renderer.domElement );
+      this.controls.enableDamping = true;
+      this.controls.dampingFactor = 0.5;
+    },
+    initLight(){
+      let directionLight = LIGHT.getDirectionLight(0, 100, 0);
+      this.scene.add(directionLight);
+
+      let ambientLight = LIGHT.getAmbientLight(0, 0, 0);
+      this.scene.add(ambientLight);
+    },
+    setUpWS () {
+      this.$axios.get("/user/detail")
+        .catch(() => {})
+        .then(res => {
+          if (res)
+          {
+            if (res.data.responseCode === Code.SUCCESS)
+            {
+              this.username = res.data.responseBody.user.username;
+            }
+            else
+            {
+              this.app.notify(res.data.responseMessage, "error");
+            }
+
+            this.ws = new WS(this.username);
+            this.player.status.ws = this.ws;
+
+            return;
+          }
+
+          this.app.notify("服务器错误，请重试", "error");
+        });
+    },
+    /*
+    setCameraPos(){
+      this.camera.position.set(this.cameraPos.x, this.cameraPos.y, this.cameraPos.z);
+    },
+    */
+    setTargetPos(){
+      this.controls.target = new THREE.Vector3(
+        Number(this.player.status.x),
+        Number(this.player.status.y),
+        Number(this.player.status.z)
+      );
+      this.controls.update();
+    },
+
+    onMousewheel(){
+      this.setTargetPos();
+    },
+    onResize(){
+      this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+      this.setTargetPos();
+    },
+    onClick(event){
+      let intersects = this.getIntersects(event);
+      if(intersects.length !== 0){
+        this.handleIntersects(intersects);
+      }
+    },
+    getIntersects(event){
+      let rayCaster = new THREE.Raycaster();
+      let mouse = new THREE.Vector2();
+      let rect = this.container.getBoundingClientRect();
+
+      mouse.x = ((event.clientX - rect.left) / this.container.clientWidth) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / this.container.clientHeight) * 2 + 1;
+      rayCaster.setFromCamera(mouse, this.camera);
+
+      return  rayCaster.intersectObjects(this.scene.children, true);
+    },
+
+    handleIntersects(intersects){
+      let obj = intersects[0].object;
+      if (obj.isExhibition){
+        this.exhibition = obj.item;
+        this.showExhibition = true;
+      }
+
+      // 如果点到了身体部位
+      let parent = obj.parent;
+      if(parent.isVisitor){
+        this.showChat = true;
+      }
+      if (parent.isNpc){
+        this.showNpc = true;
+      }
+    },
+
+
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-</style>
-
-<style>
-html{
-  overflow-x:hidden;
-  overflow-y:hidden;
+#container{
+  height: 100vh;
+  position: relative;
 }
 </style>

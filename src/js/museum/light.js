@@ -8,7 +8,7 @@ export function getDirectionLight(x, y, z){
 }
 export function getAmbientLight(x, y, z){
     let light = new THREE.AmbientLight( 0xffffff, 1 ); //AmbientLight,影响整个场景的光源-->
-    light.position.set(0,0,0);
+    light.position.set(x,y,z);
     return light;
 }
 
