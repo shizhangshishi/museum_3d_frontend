@@ -19,7 +19,7 @@ const defaultItems = {
 
 // 模型地址映射
 const models = {
-    astronaut: "/models/object/player/astronaut.fbx"
+  robot: "/models/object/player/robot.fbx"
 }
 
 // 初始位置
@@ -31,9 +31,9 @@ const INIT_POSITION_Z = 0;
 const INIT_ROTATION_Y = 0;
 
 // 初始放缩
-const INIT_SCALE_X = 0.1;
-const INIT_SCALE_Y = 0.1;
-const INIT_SCALE_Z = 0.1;
+const INIT_SCALE_X = 1.5;
+const INIT_SCALE_Y = 1.5;
+const INIT_SCALE_Z = 1.5;
 
 // 模型加载器
 const loader = new FBXLoader();
@@ -127,7 +127,7 @@ export class Environment
   {
     // 载入角色模型
     loader.load(
-      models["astronaut"],
+      models["robot"],
       root => {
           this.status.scene.add(root);
           let friendObject = root;

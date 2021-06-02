@@ -98,12 +98,11 @@ export default {
       this.container = document.getElementById("container");
       let width = this.container.clientWidth;
       let height = this.container.clientHeight;
-      console.log("!!!!"+width+","+height)
 
       this.initRenderer(width, height);
       this.initScene();
       this.initLight();
-      this.player = new Player(this.scene, "astronaut", width/height);
+      this.player = new Player(this.scene, "robot", width/height);
       this.camera = this.player.getCamera();
       this.initControls();
       window.addEventListener('mousewheel', this.onMousewheel, false);

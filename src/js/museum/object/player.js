@@ -16,7 +16,7 @@ const keys = {
 
 // 模型地址映射
 const models = {
-  astronaut: "/models/object/player/astronaut.fbx"
+  robot: "/models/object/player/robot.FBX"
 }
 
 // 初始位置
@@ -33,9 +33,9 @@ const INIT_CAMERA_DELTAZ = 600;
 const INIT_ROTATION_Y = 0;
 
 // 初始放缩
-const INIT_SCALE_X = 0.1;
-const INIT_SCALE_Y = 0.1;
-const INIT_SCALE_Z = 0.1;
+const INIT_SCALE_X = 1.5;
+const INIT_SCALE_Y = 1.5;
+const INIT_SCALE_Z = 1.5;
 
 // 每按一次方向键移动距离
 const MOVE_STEP = 30;
