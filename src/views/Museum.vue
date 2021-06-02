@@ -98,6 +98,7 @@ export default {
       this.container = document.getElementById("container");
       let width = this.container.clientWidth;
       let height = this.container.clientHeight;
+      console.log("!!!!"+width+","+height)
 
       this.initRenderer(width, height);
       this.initScene();
@@ -149,9 +150,9 @@ export default {
     },
     */
     initControls(){
-      this.controls = new OrbitControls(this.camera, this.renderer.domElement );
-      this.controls.enableDamping = true;
-      this.controls.dampingFactor = 0.5;
+      //this.controls = new OrbitControls(this.camera, this.renderer.domElement );
+      //this.controls.enableDamping = false;
+      //this.controls.dampingFactor = 0.5;
     },
     initLight(){
       let directionLight = LIGHT.getDirectionLight(0, 100, 0);
@@ -198,15 +199,14 @@ export default {
       );
       this.controls.update();
     },
-
     onMousewheel(){
-      this.setTargetPos();
+      //this.setTargetPos();
     },
     onResize(){
       this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-      this.setTargetPos();
+      //this.setTargetPos();
     },
     onClick(event){
       let intersects = this.getIntersects(event);
@@ -246,8 +246,17 @@ export default {
 </script>
 
 <style scoped>
+div{
+  margin: 0;
+}
+
 #container{
-  height: 100vh;
-  position: relative;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
 }
 </style>

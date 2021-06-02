@@ -38,7 +38,7 @@ const INIT_SCALE_Y = 0.1;
 const INIT_SCALE_Z = 0.1;
 
 // 每按一次方向键移动距离
-const MOVE_STEP = 10;
+const MOVE_STEP = 30;
 
 // 模型加载器
 const loader = new FBXLoader();
@@ -94,7 +94,7 @@ export class Player
 
   initCamera(aspect)
   {
-    let camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 10000);
+    let camera = new THREE.PerspectiveCamera(90, aspect, 0.1, 100000);
 
     camera.position.set(INIT_POSITION_X + INIT_CAMERA_DELTAX, 
       INIT_POSITION_Y + INIT_CAMERA_DELTAY, 
