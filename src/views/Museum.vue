@@ -28,6 +28,7 @@ import * as THREE from "three"
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import * as LIGHT from '@/js/museum/light'
 import {MUSEUM_CONFIG} from "@/constants/museum/museum";
+import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 
 
 import {Museum} from "@/js/museum/museum";
@@ -60,6 +61,7 @@ export default {
       camera: null,
 
       renderer: null,
+      labelRenderer: null,
 
       player: null,
       environment: null,
@@ -126,6 +128,9 @@ export default {
     },
     animate(){
       requestAnimationFrame(this.animate);
+
+      this.labelRenderer.render( this.scene, this.camera );
+
       this.renderer.render(this.scene, this.camera);
     },
     initRenderer(width, height){
@@ -136,6 +141,12 @@ export default {
       let dom = this.renderer.domElement;
       dom.addEventListener("click", this.onClick, false);
       this.container.appendChild(dom);
+
+      this.labelRenderer = new CSS2DRenderer();
+      this.labelRenderer.setSize( width, height );
+      this.labelRenderer.domElement.style.position = 'absolute';
+      this.labelRenderer.domElement.style.top = 0;
+      this.container.appendChild(this.labelRenderer.domElement);
     },
     initScene(){
       this.scene = new THREE.Scene();
@@ -169,15 +180,15 @@ export default {
             if (res.data.responseCode === Code.SUCCESS)
             {
               this.username = res.data.responseBody.user.username;
+
+              this.ws = new WS(this.username, this.player, this.environment, this.messageBox);
+              this.player.status.ws = this.ws;
+              this.environment.status.ws = this.ws;
             }
             else
             {
               this.app.notify(res.data.responseMessage, "error");
             }
-
-            this.ws = new WS(this.username, this.player, this.environment, this.messageBox);
-            this.player.status.ws = this.ws;
-            this.environment.status.ws = this.ws;
 
             return;
           }
@@ -205,6 +216,7 @@ export default {
       this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+      this.labelRenderer.setSize(this.container.clientWidth, this.container.clientHeight);
       //this.setTargetPos();
     },
     onClick(event){

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 
 // 默认物品映射
 const defaultItems = {
@@ -26,6 +27,11 @@ const models = {
 const INIT_POSITION_X = 0;
 const INIT_POSITION_Y = 0;
 const INIT_POSITION_Z = 0;
+
+// 名字偏移
+const INIT_TEXT_DELTAX = 0;
+const INIT_TEXT_DELTAY = 200;
+const INIT_TEXT_DELTAZ = 0;
 
 // 初始朝向
 const INIT_ROTATION_Y = 0;
@@ -134,6 +140,16 @@ export class Environment
 
           friendObject.scale.set(INIT_SCALE_X, INIT_SCALE_Y, INIT_SCALE_Z);
           this.status.friendObjects[username] = friendObject;
+
+          const div = document.createElement('div');
+          div.innerHTML = username;
+          div.style.color = '#ffffff';
+          let label = new CSS2DObject(div);
+          root.add(label);
+          label.position.set(
+            INIT_POSITION_X + INIT_TEXT_DELTAX, 
+            INIT_POSITION_Y + INIT_TEXT_DELTAY, 
+            INIT_POSITION_Z + INIT_TEXT_DELTAZ);
 
           callback();
       },
