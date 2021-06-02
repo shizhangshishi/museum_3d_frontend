@@ -16,11 +16,12 @@ const SubTypes = {
 
 export default class WS
 {
-    constructor(username, player, environment)
+    constructor(username, player, environment, messageBox)
     {
         this.username = username;
         this.player = player;
         this.environment = environment;
+        this.messageBox = messageBox;
 
         this.connection = new WebSocket(`ws://localhost:8080/websocket/${username}`);
         
@@ -58,6 +59,10 @@ export default class WS
                     break;
                 case(MessageTypes.chat):
                     // 收到聊天时显示在聊天栏里
+                    this.messageBox.messages.push({
+                        username: data.fromUsername,
+                        text: data.text
+                    });
                     break;
                 case(MessageTypes.position):
                 default:

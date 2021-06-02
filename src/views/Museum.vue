@@ -18,9 +18,7 @@
       <Npc v-if="showNpc"
            :showNpc.sync="showNpc"
       ></Npc>
-      <Chat v-if="showChat"
-            :showChat.sync="showChat"
-      ></Chat>
+      <Chat :ws.sync="ws" :messageBox.sync="messageBox"></Chat>
     </v-container>
   </v-container>
 </template>
@@ -78,8 +76,11 @@ export default {
       showMap: false,
       showExhibition: false,
       showNpc: false,
-      showChat: false
 
+      messageBox: {
+        newMessage: "",
+        messages: []
+      }
     }
   },
   mounted() {
@@ -174,7 +175,7 @@ export default {
               this.app.notify(res.data.responseMessage, "error");
             }
 
-            this.ws = new WS(this.username, this.player, this.environment);
+            this.ws = new WS(this.username, this.player, this.environment, this.messageBox);
             this.player.status.ws = this.ws;
             this.environment.status.ws = this.ws;
 
@@ -234,9 +235,6 @@ export default {
 
       // 如果点到了身体部位
       let parent = obj.parent;
-      if(parent.isVisitor){
-        this.showChat = true;
-      }
       if (parent.isNpc){
         this.showNpc = true;
       }
