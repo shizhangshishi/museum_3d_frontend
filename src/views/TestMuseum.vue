@@ -1,6 +1,6 @@
 <template>
   <v-container id="container">
-
+<!--    <Npc :showNpc.sync = showNpc></Npc>-->
   </v-container>
 </template>
 <script>
@@ -13,10 +13,12 @@ import * as LIGHT from "@/js/museum/light";
 import {MUSEUM_CONFIG} from "@/constants/museum/museum";
 import {Museum} from "@/js/museum/museum";
 import {Reference} from "@/js/museum/reference";
+import Npc from "@/components/museum/Npc";
 
 
 export default {
   name: 'Test',
+  // components: {Npc},
   label:'Test 3D 模型',
   data() {
     return {
@@ -25,7 +27,9 @@ export default {
       camera: null,
       renderer: null,
 
-      museum: null
+      museum: null,
+
+      showNpc: false,
     }
   },
   methods: {
@@ -44,11 +48,11 @@ export default {
     },
     initMuseum(){
       // 添加一个参照物
-      this.scene.add(new Reference());
+      // this.scene.add(new Reference());
 
       this.museum = new Museum(MUSEUM_CONFIG);
       this.scene.add(this.museum);
-      console.log(this.museum);
+      // console.log(this.museum);
     },
     initRenderer(width, height){
       this.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
@@ -71,6 +75,7 @@ export default {
       this.controls = new OrbitControls(this.camera, this.renderer.domElement );
       this.controls.enableDamping = true;
       this.controls.dampingFactor = 0.5;
+      this.controls.target = new THREE.Vector3(0, 0, -10_00);
     },
     initLight(){
 
