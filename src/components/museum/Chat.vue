@@ -1,25 +1,29 @@
 <template>
   <v-container>
-    <v-card id="chat" v-if="show">
-      <v-card-title>
-        <v-col class="col-10">
-          聊天栏
-        </v-col>
-        <v-col class="col-2">
-          <v-btn style="right: 20%" @click="show = false">关闭</v-btn>
-        </v-col>
-      </v-card-title>
-      <v-card-text id="messages">
-        <div v-for="(message, idx) in messageBox.messages" v-bind:key="idx">
-          {{ message.username }}:{{ message.text }}
-        </div>
-      </v-card-text>
-      <v-card-actions style="bottom: 5%">
-        <v-text-field v-model="messageBox.newMessage"></v-text-field>
-        <v-btn @click="sendMessage">发送</v-btn>
-      </v-card-actions>
-    </v-card>
-    <v-btn v-else id="showChat" @click="show = true">显示聊天</v-btn>
+    <v-container v-if="show">
+      <v-card id="chat">
+        <v-card-title>
+          <v-col class="col-10">
+            聊天栏
+          </v-col>
+          <v-col class="col-2">
+            <v-btn style="right: 20%" @click="show = false">关闭</v-btn>
+          </v-col>
+        </v-card-title>
+        <v-card-text id="messages">
+          <div v-for="(message, idx) in messageBox.messages" v-bind:key="idx">
+            {{ message.username }}:{{ message.text }}
+          </div>
+        </v-card-text>
+        <v-card-actions style="bottom: 5%">
+          <v-text-field v-model="messageBox.newMessage"></v-text-field>
+          <v-btn @click="sendMessage">发送</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-container>
+    <v-container v-else>
+      <v-btn id="showChat" @click="show = true">显示聊天</v-btn>
+    </v-container>
   </v-container>
 </template>
 
@@ -59,7 +63,8 @@ export default {
 }
 
 button{
-  background-color: #FFFFFF66
+  background-color: #FFFFFF66;
+  z-index: 10;
 }
 
 #messages{
