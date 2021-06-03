@@ -8,6 +8,8 @@
         <v-btn @click="close">关闭</v-btn>
       </v-col>
     </v-card-title>
+    <v-card-text>
+    </v-card-text>
   </v-card>
 </template>
 

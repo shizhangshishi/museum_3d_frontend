@@ -7,6 +7,7 @@ import Login from '@/views/Login';
 import Register from '@/views/Register';
 import Info from '@/views/Info';
 import Museum from '@/views/Museum';
+import Question from "@/views/Question";
 import Error from '@/views/Error';
 
 import Test from '@/views/Test'
@@ -42,6 +43,14 @@ const routes = [
     path: '/museum',
     name: 'Museum',
     component: Museum,
+    meta: {
+      requireAuth: true
+    }
+  },
+  {
+    path: '/question/:type',
+    name: 'Question',
+    component: Question,
     meta: {
       requireAuth: true
     }
