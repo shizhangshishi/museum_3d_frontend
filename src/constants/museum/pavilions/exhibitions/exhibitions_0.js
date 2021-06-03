@@ -1,27 +1,23 @@
+import * as EXHIBITIONS from "/public/museum/room/0/0.json";
+import {EXHIBITION_SIZE} from "@/constants/museum/pavilions/exhibitions/exhibition_size";
 const BASIC_PATH = "/museum/room/0/image/";
 
-let exhibitions = [];
-let length = 12;
+let exhibitions = EXHIBITIONS.default;
 
-for (let i = 0; i < length; i++){
-    if ((i % 2) === 1){
-        exhibitions.push(
-            {
-                name: "pavilion_0 exhibition_" + i,
-                path: BASIC_PATH + "1.png",
-                k: 2,
-                description: "description"
-            });
-    }
-    else {
-        exhibitions.push(
-            {
-                name: "pavilion_0 exhibition_" + i,
-                path: BASIC_PATH + "2.png",
-                k: 1,
-                description: "description"
-            });
-    }
+
+for (let i = 0; i < exhibitions.length; i++){
+    exhibitions[i].path = BASIC_PATH + exhibitions[i].path;
 }
+const LEFT_WALL_EXHIBITIONS = exhibitions.slice(0, 3);
+const BEHIND_WALL_EXHIBITIONS = exhibitions.slice(3, 5);
+const RIGHT_WALL_EXHIBITIONS = exhibitions.slice(5, 8);
+const FRONT_WALL_EXHIBITIONS = exhibitions.slice(8, 10);
 
-export const EXHIBITIONS_0 = exhibitions;
+export const EXHIBITIONS_0 = {
+    EXHIBITION_SIZE,
+    LEFT_WALL_EXHIBITIONS,
+    BEHIND_WALL_EXHIBITIONS,
+    RIGHT_WALL_EXHIBITIONS,
+    FRONT_WALL_EXHIBITIONS
+};
+

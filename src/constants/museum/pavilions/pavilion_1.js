@@ -1,7 +1,7 @@
 import {ROOM} from "@/constants/museum/pavilions/room";
 import {EXHIBITIONS_1} from "@/constants/museum/pavilions/exhibitions/exhibitions_1";
-import {EXHIBITIONS} from "@/constants/museum/pavilions/exhibitions/example";
 
+const EXHIBITIONS = EXHIBITIONS_1;
 
 
 export const PAVILION_1 = {

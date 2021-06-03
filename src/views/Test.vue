@@ -16,6 +16,8 @@ import {Player} from "@/js/museum/object/player"
 import {Receptionist} from "@/js/museum/architecture/components/hall/receptionist";
 import {Reference} from "@/js/museum/reference";
 
+import * as EXHIBITIONS from "/public/museum/room/0/0.json"
+
 export default {
   name: 'Test',
   label:'Test 3D 模型',
@@ -31,6 +33,7 @@ export default {
     test(){
       let ref = new Reference();
       this.scene.add(ref);
+      console.log(EXHIBITIONS.default);
     },
     init(){
       this.container = document.getElementById("container");
