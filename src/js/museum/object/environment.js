@@ -59,7 +59,8 @@ export class Environment
       scene: scene,
       friends: {},
       items: {},
-      friendObjects: {}
+      friendObjects: {},
+      nameDivs: {}
     };
 
     this.loadDefaultItems();
@@ -92,7 +93,10 @@ export class Environment
     delete this.status.friends[username];
 
     // 删除模型
+    this.status.scene.remove(this.status.friendObjects[username]);
     delete this.status.friendObjects[username];
+    this.status.nameDivs[username].innerHTML = "";
+    this.status.nameDivs[username].hidden = true;
   }
 
   updateFriend(username, position)
@@ -150,6 +154,7 @@ export class Environment
             INIT_POSITION_X + INIT_TEXT_DELTAX, 
             INIT_POSITION_Y + INIT_TEXT_DELTAY, 
             INIT_POSITION_Z + INIT_TEXT_DELTAZ);
+          this.status.nameDivs[username] = div;
 
           callback();
       },
