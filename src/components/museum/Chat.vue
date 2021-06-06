@@ -33,7 +33,7 @@ export default {
   props: ["ws", "messageBox"],
   data(){
     return {
-      show: true
+      show: false
     }
   },
   methods:{

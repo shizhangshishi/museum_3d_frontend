@@ -257,17 +257,12 @@ export default {
 </script>
 
 <style scoped>
-div{
-  margin: 0;
-}
+/*div{*/
+/*  margin: 0;*/
+/*}*/
 
 #container{
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  position: absolute;
+  height: 100vh;
+  position: relative;
 }
 </style>
