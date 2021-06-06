@@ -37,9 +37,9 @@ const INIT_TEXT_DELTAZ = 0;
 const INIT_ROTATION_Y = 0;
 
 // 初始放缩
-const INIT_SCALE_X = 1.5;
-const INIT_SCALE_Y = 1.5;
-const INIT_SCALE_Z = 1.5;
+const INIT_SCALE_X = 1;
+const INIT_SCALE_Y = 1;
+const INIT_SCALE_Z = 1;
 
 // 模型加载器
 const loader = new FBXLoader();

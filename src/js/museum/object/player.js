@@ -27,8 +27,10 @@ const INIT_POSITION_Z = 0;
 
 // 相机偏移
 const INIT_CAMERA_DELTAX = 0;
-const INIT_CAMERA_DELTAY = 800;
-const INIT_CAMERA_DELTAZ = 600;
+//const INIT_CAMERA_DELTAY = 800;
+//const INIT_CAMERA_DELTAZ = 600;
+const INIT_CAMERA_DISTANCE = 2000;
+const INIT_CAMERA_ANGLE = 1;
 
 // 名字偏移
 const INIT_TEXT_DELTAX = 0;
@@ -60,12 +62,13 @@ export class Player
   {
     this.status = 
     {
-      ws: null,
+      globalConfig: null,
       scene: scene,
       x: INIT_POSITION_X,
       y: INIT_POSITION_Y,
       z: INIT_POSITION_Z,
       rotationY: INIT_ROTATION_Y,
+      cameraAngle: INIT_CAMERA_ANGLE,
       playerObject: null,
       cameraObject: null
     }
@@ -116,8 +119,8 @@ export class Player
     let camera = new THREE.PerspectiveCamera(45, aspect, 1, 10000);
 
     camera.position.set(INIT_POSITION_X + INIT_CAMERA_DELTAX, 
-      INIT_POSITION_Y + INIT_CAMERA_DELTAY, 
-      INIT_POSITION_Z + INIT_CAMERA_DELTAZ);
+      INIT_POSITION_Y + INIT_CAMERA_DISTANCE * Math.sin(INIT_CAMERA_ANGLE), 
+      INIT_POSITION_Z + INIT_CAMERA_DISTANCE * Math.cos(INIT_CAMERA_ANGLE));
     camera.lookAt(new THREE.Vector3(INIT_POSITION_X, INIT_POSITION_Y, INIT_POSITION_Z));
 
     this.status.cameraObject = camera;
@@ -132,38 +135,41 @@ export class Player
   {
     // 设置控制
     document.onkeydown = () => {
-      let key = window.event.keyCode;
-      let delta = {
-        x: 0,
-        z: 0
-      };
-      switch (key)
+      if (!this.status.globalConfig.blockKey)
       {
-        case (keys.a):
-        case (keys.left):
-          delta.x = -MOVE_STEP;
-          break;
-        case (keys.w):
-        case (keys.up):
-          delta.z = -MOVE_STEP;
-          break;
-        case (keys.d):
-        case (keys.right):
-          delta.x = MOVE_STEP;
-          break;
-        case (keys.s):
-        case (keys.down):
-          delta.z = MOVE_STEP;
-          break;
-        case (keys.enter):
-          console.log("hit enter")
-          break;
+        let key = window.event.keyCode;
+        let delta = {
+          x: 0,
+          z: 0
+        };
+        switch (key)
+        {
+          case (keys.a):
+          case (keys.left):
+            delta.x = -MOVE_STEP;
+            break;
+          case (keys.w):
+          case (keys.up):
+            delta.z = -MOVE_STEP;
+            break;
+          case (keys.d):
+          case (keys.right):
+            delta.x = MOVE_STEP;
+            break;
+          case (keys.s):
+          case (keys.down):
+            delta.z = MOVE_STEP;
+            break;
+          case (keys.enter):
+            console.log("hit enter")
+            break;
+        }
+  
+        this.rotate(delta);
+        this.move(delta);
+        this.updateModel();
+        this.sendPosition();
       }
-
-      this.rotate(delta);
-      this.move(delta);
-      this.updateModel();
-      this.sendPosition();
     }
   }
 
@@ -193,6 +199,16 @@ export class Player
     this.status.z += delta.z;
   }
 
+  cameraRotate(delta)
+  {
+    let newValue = this.status.cameraAngle + delta / 3000;
+    if (newValue > 0 && newValue < Math.PI / 2)
+    {
+      this.status.cameraAngle = newValue;
+      this.updateModel();
+    }
+  }
+
   updateModel()
   {
     // 更新玩家模型的位置
@@ -205,16 +221,16 @@ export class Player
 
     // 更新相机的位置
     this.status.cameraObject.position.set(this.status.x + INIT_CAMERA_DELTAX, 
-      this.status.y + INIT_CAMERA_DELTAY, 
-      this.status.z + INIT_CAMERA_DELTAZ);
+      this.status.y + Math.sin(this.status.cameraAngle) * INIT_CAMERA_DISTANCE, 
+      this.status.z + Math.cos(this.status.cameraAngle) * INIT_CAMERA_DISTANCE);
     this.status.cameraObject.lookAt(new THREE.Vector3(this.status.x, this.status.y, this.status.z));
   }
 
   sendPosition()
   {
-    if (this.status.ws !== null)
+    if (this.status.globalConfig.ws !== null)
     {
-      this.status.ws.sendMyPosition({
+      this.status.globalConfig.ws.sendMyPosition({
         x: this.status.x,
         y: this.status.y,
         z: this.status.z,

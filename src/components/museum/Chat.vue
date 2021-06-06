@@ -6,7 +6,11 @@
           聊天栏
         </v-col>
         <v-col class="col-2">
-          <v-btn style="right: 20%" @click="show = false">关闭</v-btn>
+          <v-btn fab light small @click="show = false">
+            <v-icon light>
+              mdi-close
+            </v-icon>
+          </v-btn>
         </v-col>
       </v-card-title>
       <v-card-text id="messages">
@@ -15,7 +19,10 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-text-field v-model="messageBox.newMessage"></v-text-field>
+        <v-text-field 
+          @focus="globalConfig.blockKey = true" 
+          @blur="globalConfig.blockKey = false" 
+          v-model="messageBox.newMessage"></v-text-field>
         <v-btn @click="sendMessage">发送</v-btn>
       </v-card-actions>
     </v-card>
@@ -26,7 +33,7 @@
 <script>
 export default {
   name: "chat",
-  props: ["ws", "messageBox"],
+  props: ["globalConfig", "messageBox"],
   data(){
     return {
       show: false
@@ -35,7 +42,8 @@ export default {
   methods:{
     sendMessage()
     {
-      this.ws.sendChatMessageToAll(this.messageBox.newMessage);
+      this.globalConfig.ws.sendChatMessageToAll(this.messageBox.newMessage);
+      this.messageBox.newMessage = "";
     }
   }
 }

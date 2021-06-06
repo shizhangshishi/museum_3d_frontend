@@ -17,7 +17,7 @@
     <Npc v-if="showNpc"
          :showNpc.sync="showNpc"
     ></Npc>
-    <Chat :ws.sync="ws" :messageBox.sync="messageBox"></Chat>
+    <Chat :globalConfig.sync="globalConfig" :messageBox.sync="messageBox"></Chat>
   </div>
 </template>
 
@@ -51,7 +51,10 @@ export default {
   data(){
     return{
       username: "",
-      ws: null,
+      globalConfig: {
+        ws: null,
+        blockKey: false
+      },
 
       container:null,
       scene: null,
@@ -179,9 +182,9 @@ export default {
             {
               this.username = res.data.responseBody.user.username;
 
-              this.ws = new WS(this.username, this.player, this.environment, this.messageBox);
-              this.player.status.ws = this.ws;
-              this.environment.status.ws = this.ws;
+              this.globalConfig.ws = new WS(this.username, this.player, this.environment, this.messageBox);
+              this.player.status.globalConfig = this.globalConfig;
+              this.environment.status.ws = this.globalConfig.ws;
             }
             else
             {
@@ -207,8 +210,8 @@ export default {
       );
       this.controls.update();
     },
-    onMousewheel(){
-      //this.setTargetPos();
+    onMousewheel(event){
+      this.player.cameraRotate(event.wheelDelta);
     },
     onResize(){
       this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
