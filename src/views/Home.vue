@@ -32,7 +32,17 @@
               sm="4"
           >
             <v-img
-                src="../assets/index/2.jpg"
+                src="/museum/room/0/image/8.png"
+                gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"
+            ></v-img>
+            <div>核科学知识展区</div>
+          </v-col>
+          <v-col
+              cols="6"
+              sm="4"
+          >
+            <v-img
+                src="/museum/room/1/image/1.png"
                 gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"
             ></v-img>
             <div>切尔贝诺利展区</div>
@@ -42,62 +52,52 @@
               sm="4"
           >
             <v-img
-                src="../assets/index/2.jpg"
+                src="/museum/room/2/image/2.png"
                 gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"
             ></v-img>
-            <div>切尔贝诺利展区</div>
-          </v-col>
-          <v-col
-              cols="6"
-              sm="4"
-          >
-            <v-img
-                src="../assets/index/2.jpg"
-                gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"
-            ></v-img>
-            <div>切尔贝诺利展区</div>
+            <div>福岛核泄漏展区</div>
           </v-col>
         </v-row>
       </v-container>
-      <v-container class="section">
-        <v-row>
-          <v-col class="title">
-            展品
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-              cols="6"
-              sm="4"
-          >
-            <v-img
-                src="../assets/index/2.jpg"
-                gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"
-            ></v-img>
-            <div>切尔贝诺利展区</div>
-          </v-col>
-          <v-col
-              cols="6"
-              sm="4"
-          >
-            <v-img
-                src="../assets/index/2.jpg"
-                gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"
-            ></v-img>
-            <div>切尔贝诺利展区</div>
-          </v-col>
-          <v-col
-              cols="6"
-              sm="4"
-          >
-            <v-img
-                src="../assets/index/2.jpg"
-                gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"
-            ></v-img>
-            <div>切尔贝诺利展区</div>
-          </v-col>
-        </v-row>
-      </v-container>
+<!--      <v-container class="section">-->
+<!--        <v-row>-->
+<!--          <v-col class="title">-->
+<!--            展品-->
+<!--          </v-col>-->
+<!--        </v-row>-->
+<!--        <v-row>-->
+<!--          <v-col-->
+<!--              cols="6"-->
+<!--              sm="4"-->
+<!--          >-->
+<!--            <v-img-->
+<!--                src="../assets/index/2.jpg"-->
+<!--                gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"-->
+<!--            ></v-img>-->
+<!--            <div>切尔贝诺利展区</div>-->
+<!--          </v-col>-->
+<!--          <v-col-->
+<!--              cols="6"-->
+<!--              sm="4"-->
+<!--          >-->
+<!--            <v-img-->
+<!--                src="../assets/index/2.jpg"-->
+<!--                gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"-->
+<!--            ></v-img>-->
+<!--            <div>切尔贝诺利展区</div>-->
+<!--          </v-col>-->
+<!--          <v-col-->
+<!--              cols="6"-->
+<!--              sm="4"-->
+<!--          >-->
+<!--            <v-img-->
+<!--                src="../assets/index/2.jpg"-->
+<!--                gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"-->
+<!--            ></v-img>-->
+<!--            <div>切尔贝诺利展区</div>-->
+<!--          </v-col>-->
+<!--        </v-row>-->
+<!--      </v-container>-->
     </v-container>
     <Footer></Footer>
   </v-app>
@@ -118,7 +118,7 @@ export default {
     return{
       main_text:{
         title: '核泄漏博物馆',
-        description: '中国核聚变博物馆坐落于我国美丽的旅游城市--四川乐山。与举世瞩目的乐山大佛隔江相望。中国核聚变博物馆落户于成都理工大学工程技术学院内，原核工业585所基地。这是我国第一个核聚变博物馆，也是我国第一个也是唯一一个对公众开放的核聚变博物馆。'
+        description: '核泄漏博物馆坐落于我国美丽的旅游城市--四川乐山。与举世瞩目的乐山大佛隔江相望。中国核泄漏博物馆落户于成都理工大学工程技术学院内，原核工业585所基地。这是我国第一个核泄漏博物馆，也是我国第一个也是唯一一个对公众开放的核泄漏博物馆。'
       }
     }
   },

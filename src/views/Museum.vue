@@ -75,7 +75,7 @@ export default {
       showSetting: false,
       showMap: false,
       showExhibition: false,
-      showNpc: true,
+      showNpc: false,
 
       messageBox: {
         newMessage: "",

@@ -1,8 +1,8 @@
 <template>
-<v-container>
-  <TopNav></TopNav>
-  <v-container>
+  <v-app>
+    <TopNav></TopNav>
     <v-container>
+      <v-container>
       <v-card v-for="(item, index) in questions" :key="index">
         <v-card-title>
           {{index+1}}:{{item.question}}
@@ -22,13 +22,13 @@
         <v-divider></v-divider>
       </v-card>
     </v-container>
-    <v-container>
+      <v-container>
       <v-container style="text-align:center">
         <v-btn @click="back" color="primary" style="margin: 0 100px">返回</v-btn>
         <v-btn @click="submit" color="primary">提交</v-btn>
       </v-container>
     </v-container>
-    <v-overlay v-if="showResults">
+      <v-overlay v-if="showResults">
       <v-card width="800" style="text-align: center">
         <v-card-title style="text-align: center">
           <v-row>
@@ -53,9 +53,9 @@
         </v-card-actions>
       </v-card>
     </v-overlay>
-  </v-container>
-  <Footer></Footer>
-</v-container>
+    </v-container>
+    <Footer></Footer>
+  </v-app>
 </template>
 
 <script>
@@ -87,11 +87,14 @@ export default {
         this.initAnswerSheet();
       });
     },
-    initAnswerSheet(){
-      let length = this.questions.length;
+    initAnswers(length){
       for (let i = 0; i < length; i++){
         this.answers.push("");
       }
+    },
+    initAnswerSheet(){
+      let length = this.questions.length;
+      this.initAnswers(length);
       for (let i = 0; i < length; i++){
         this.questionIds.push(this.questions[i].id);
       }
