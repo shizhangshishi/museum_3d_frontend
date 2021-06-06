@@ -26,7 +26,7 @@ export default class WS
         this.connection = new WebSocket(`ws://localhost:8080/websocket/${username}`);
         
         this.setOnMessage();
-        console.log("连接WS");
+        // console.log("连接WS");
     }
 
     send(object)
@@ -37,7 +37,7 @@ export default class WS
     setOnMessage()
     {
         this.connection.onmessage = (msg) => {
-            console.log(msg);
+            // console.log(msg);
             let data = JSON.parse(msg.data)
             switch(data.messageType)
             {
@@ -71,10 +71,10 @@ export default class WS
                     break;
             }
 
-            console.log("!"+this.username);
-            console.log(this.environment.block);
-            console.log(this.environment.status);
-            console.log("?"+this.username);
+            // console.log("!"+this.username);
+            // console.log(this.environment.block);
+            // console.log(this.environment.status);
+            // console.log("?"+this.username);
         };
     }
 

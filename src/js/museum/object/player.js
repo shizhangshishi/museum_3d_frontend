@@ -39,9 +39,9 @@ const INIT_TEXT_DELTAZ = 0;
 const INIT_ROTATION_Y = 0;
 
 // 初始放缩
-const INIT_SCALE_X = 1.5;
-const INIT_SCALE_Y = 1.5;
-const INIT_SCALE_Z = 1.5;
+const INIT_SCALE_X = 1;
+const INIT_SCALE_Y = 1;
+const INIT_SCALE_Z = 1;
 
 // 每按一次方向键移动距离
 const MOVE_STEP = 30;
@@ -90,11 +90,14 @@ export class Player
           const div = document.createElement('div');
           div.innerHTML = "玩家";
           div.style.color = '#ffffaa';
+          div.style.width = '80px';
+          div.style.height = '40px';
+          div.style.textAlign = 'center';
           let label = new CSS2DObject(div);
           root.add(label);
           label.position.set(
-            INIT_POSITION_X + INIT_TEXT_DELTAX, 
-            INIT_POSITION_Y + INIT_TEXT_DELTAY, 
+            INIT_POSITION_X + INIT_TEXT_DELTAX,
+            INIT_POSITION_Y + INIT_TEXT_DELTAY,
             INIT_POSITION_Z + INIT_TEXT_DELTAZ);
 
           callback();
@@ -110,7 +113,7 @@ export class Player
 
   initCamera(aspect)
   {
-    let camera = new THREE.PerspectiveCamera(90, aspect, 0.1, 100000);
+    let camera = new THREE.PerspectiveCamera(45, aspect, 1, 10000);
 
     camera.position.set(INIT_POSITION_X + INIT_CAMERA_DELTAX, 
       INIT_POSITION_Y + INIT_CAMERA_DELTAY, 

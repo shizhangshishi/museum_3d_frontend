@@ -19,11 +19,11 @@ export class Hall extends Room{
     setReception(){
         let config = this.config.RECEPTION;
         this.reception = new Reception(config);
-        this.reception.rotation.y += 0.5 * Math.PI;
+        // this.reception.rotation.y += 0.5 * Math.PI;
 
         let innerSize = this.config.ROOM.INNER_SIZE;
-        this.reception.position.x += - (innerSize.width / 2) * 0.7;
-        this.reception.position.z += (innerSize.depth / 2) * 0.4;
+        // this.reception.position.x += - (innerSize.width / 2) * 0.7;
+        this.reception.position.z -= (innerSize.depth / 2) * 0.4;
         this.add(this.reception);
     }
     setCanteen(){

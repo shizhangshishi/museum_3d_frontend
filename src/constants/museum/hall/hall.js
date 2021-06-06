@@ -36,7 +36,7 @@ const DOOR = {
     BEHIND_DOOR
 }
 const FRONT_TABLE = {
-    width: 3_00,
+    width: 5_00,
     height: 1_20,
     depth: 1_00
 }

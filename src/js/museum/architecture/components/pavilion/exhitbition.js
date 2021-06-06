@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import {Image} from "@/js/museum/loadModel/image";
-import {Reference} from "@/js/museum/reference";
 
 
 export class Exhibition extends THREE.Mesh{

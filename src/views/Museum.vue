@@ -1,26 +1,24 @@
 <template>
-  <v-container>
-    <v-container id="container">
-      <BtnArea  :showSetting.sync="showSetting" :showMap.sync="showMap"></BtnArea>
+  <div id="container">
+    <BtnArea  :showSetting.sync="showSetting" :showMap.sync="showMap"></BtnArea>
 
-      <Setting v-if="showSetting"
-               :showSetting.sync="showSetting"
-      ></Setting>
+    <Setting v-if="showSetting"
+             :showSetting.sync="showSetting"
+    ></Setting>
 
-      <Map v-if="showMap"
-           :showMap.sync="showMap"
-      ></Map>
+    <Map v-if="showMap"
+         :showMap.sync="showMap"
+    ></Map>
 
-      <Exhibition v-if="showExhibition"
-                  :exhibition="exhibition"
-                  :showExhibition.sync="showExhibition"
-      ></Exhibition>
-      <Npc v-if="showNpc"
-           :showNpc.sync="showNpc"
-      ></Npc>
-      <Chat :ws.sync="ws" :messageBox.sync="messageBox"></Chat>
-    </v-container>
-  </v-container>
+    <Exhibition v-if="showExhibition"
+                :exhibition="exhibition"
+                :showExhibition.sync="showExhibition"
+    ></Exhibition>
+    <Npc v-if="showNpc"
+         :showNpc.sync="showNpc"
+    ></Npc>
+    <Chat :ws.sync="ws" :messageBox.sync="messageBox"></Chat>
+  </div>
 </template>
 
 <script>
@@ -77,7 +75,7 @@ export default {
       showSetting: false,
       showMap: false,
       showExhibition: false,
-      showNpc: false,
+      showNpc: true,
 
       messageBox: {
         newMessage: "",
@@ -109,6 +107,7 @@ export default {
       this.initControls();
       window.addEventListener('mousewheel', this.onMousewheel, false);
       window.addEventListener('resize', this.onResize, false);
+      this.container.addEventListener("click", this.onClick, false);
 
       this.environment = new Environment(this.scene);
     },
@@ -139,7 +138,6 @@ export default {
       this.renderer.setClearColor(0x4682B4,1.0);
       this.renderer.shadowMap.enabled = true;
       let dom = this.renderer.domElement;
-      dom.addEventListener("click", this.onClick, false);
       this.container.appendChild(dom);
 
       this.labelRenderer = new CSS2DRenderer();
@@ -220,6 +218,7 @@ export default {
       //this.setTargetPos();
     },
     onClick(event){
+      console.log("被点击了");
       let intersects = this.getIntersects(event);
       if(intersects.length !== 0){
         this.handleIntersects(intersects);
@@ -239,14 +238,14 @@ export default {
 
     handleIntersects(intersects){
       let obj = intersects[0].object;
-      if (obj.isExhibition){
-        this.exhibition = obj.item;
+      console.log("被点击的对象是：");
+      console.log(obj);
+      if (obj.parent.isExhibition){
+        this.exhibition = obj.parent.item;
         this.showExhibition = true;
       }
 
-      // 如果点到了身体部位
-      let parent = obj.parent;
-      if (parent.isNpc){
+      if (obj.parent.parent.isReceptionist){
         this.showNpc = true;
       }
     },
@@ -257,12 +256,10 @@ export default {
 </script>
 
 <style scoped>
-/*div{*/
-/*  margin: 0;*/
-/*}*/
 
 #container{
   height: 100vh;
+  width: 100%;
   position: relative;
 }
 </style>
