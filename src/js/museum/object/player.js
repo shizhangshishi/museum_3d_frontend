@@ -33,6 +33,14 @@ const INIT_CAMERA_DISTANCE = 2000;
 const INIT_CAMERA_THETA = 1;
 const INIT_CAMERA_PHI = 0;
 
+// 相机偏移限制
+const CAMERA_DISTANCE_MIN = 0;
+const CAMERA_DISTANCE_MAX = 10000;
+const CAMERA_THETA_MIN = 0;
+const CAMERA_THETA_MAX = Math.PI / 2;
+const CAMERA_PHI_MIN = -Math.PI / 2;
+const CAMERA_PHI_MAX = Math.PI / 2;
+
 // 名字偏移
 const INIT_TEXT_DELTAX = 0;
 const INIT_TEXT_DELTAY = 200;
@@ -205,7 +213,7 @@ export class Player
   cameraMove(delta)
   {
     let newValue = this.status.cameraDistance + delta;
-    if (newValue > 0 && newValue < INIT_CAMERA_DISTANCE * 5)
+    if (newValue > CAMERA_DISTANCE_MIN && newValue < CAMERA_DISTANCE_MAX)
     {
       this.status.cameraDistance = newValue;
       this.updateModel();
@@ -216,7 +224,11 @@ export class Player
   {
     let newValueTheta = this.status.cameraTheta - delta.y / 500;
     let newValuePhi = this.status.cameraPhi - delta.x / 500;
-    if (newValueTheta > -Math.PI / 2 && newValueTheta < Math.PI / 2 && newValuePhi > -Math.PI / 2 && newValuePhi < Math.PI / 2)
+    if (
+      newValueTheta > CAMERA_THETA_MIN && 
+      newValueTheta < CAMERA_THETA_MAX && 
+      newValuePhi > CAMERA_PHI_MIN && 
+      newValuePhi < CAMERA_PHI_MAX)
     {
       this.status.cameraTheta = newValueTheta;
       this.status.cameraPhi = newValuePhi;
