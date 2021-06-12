@@ -26,11 +26,20 @@ const INIT_POSITION_Y = 0;
 const INIT_POSITION_Z = 0;
 
 // 相机偏移
-const INIT_CAMERA_DELTAX = 0;
+//const INIT_CAMERA_DELTAX = 0;
 //const INIT_CAMERA_DELTAY = 800;
 //const INIT_CAMERA_DELTAZ = 600;
 const INIT_CAMERA_DISTANCE = 2000;
-const INIT_CAMERA_ANGLE = 1;
+const INIT_CAMERA_THETA = 1;
+const INIT_CAMERA_PHI = 0;
+
+// 相机偏移限制
+const CAMERA_DISTANCE_MIN = 0;
+const CAMERA_DISTANCE_MAX = 10000;
+const CAMERA_THETA_MIN = 0;
+const CAMERA_THETA_MAX = Math.PI / 2;
+const CAMERA_PHI_MIN = -Math.PI / 2;
+const CAMERA_PHI_MAX = Math.PI / 2;
 
 // 名字偏移
 const INIT_TEXT_DELTAX = 0;
@@ -68,7 +77,9 @@ export class Player
       y: INIT_POSITION_Y,
       z: INIT_POSITION_Z,
       rotationY: INIT_ROTATION_Y,
-      cameraAngle: INIT_CAMERA_ANGLE,
+      cameraDistance: INIT_CAMERA_DISTANCE,
+      cameraTheta: INIT_CAMERA_THETA,
+      cameraPhi: INIT_CAMERA_PHI,
       playerObject: null,
       cameraObject: null
     }
@@ -118,9 +129,9 @@ export class Player
   {
     let camera = new THREE.PerspectiveCamera(45, aspect, 1, 10000);
 
-    camera.position.set(INIT_POSITION_X + INIT_CAMERA_DELTAX, 
-      INIT_POSITION_Y + INIT_CAMERA_DISTANCE * Math.sin(INIT_CAMERA_ANGLE), 
-      INIT_POSITION_Z + INIT_CAMERA_DISTANCE * Math.cos(INIT_CAMERA_ANGLE));
+    camera.position.set(INIT_POSITION_X + INIT_CAMERA_DISTANCE * Math.sin(INIT_CAMERA_THETA) * Math.sin(INIT_CAMERA_PHI), 
+      INIT_POSITION_Y + INIT_CAMERA_DISTANCE * Math.cos(INIT_CAMERA_THETA), 
+      INIT_POSITION_Z + INIT_CAMERA_DISTANCE * Math.sin(INIT_CAMERA_THETA) * Math.cos(INIT_CAMERA_PHI));
     camera.lookAt(new THREE.Vector3(INIT_POSITION_X, INIT_POSITION_Y, INIT_POSITION_Z));
 
     this.status.cameraObject = camera;
@@ -199,12 +210,28 @@ export class Player
     this.status.z += delta.z;
   }
 
+  cameraMove(delta)
+  {
+    let newValue = this.status.cameraDistance + delta;
+    if (newValue > CAMERA_DISTANCE_MIN && newValue < CAMERA_DISTANCE_MAX)
+    {
+      this.status.cameraDistance = newValue;
+      this.updateModel();
+    }
+  }
+
   cameraRotate(delta)
   {
-    let newValue = this.status.cameraAngle + delta / 3000;
-    if (newValue > 0 && newValue < Math.PI / 2)
+    let newValueTheta = this.status.cameraTheta - delta.y / 500;
+    let newValuePhi = this.status.cameraPhi - delta.x / 500;
+    if (
+      newValueTheta > CAMERA_THETA_MIN && 
+      newValueTheta < CAMERA_THETA_MAX && 
+      newValuePhi > CAMERA_PHI_MIN && 
+      newValuePhi < CAMERA_PHI_MAX)
     {
-      this.status.cameraAngle = newValue;
+      this.status.cameraTheta = newValueTheta;
+      this.status.cameraPhi = newValuePhi;
       this.updateModel();
     }
   }
@@ -220,9 +247,10 @@ export class Player
     this.status.playerObject.rotation.y = this.status.rotationY;
 
     // 更新相机的位置
-    this.status.cameraObject.position.set(this.status.x + INIT_CAMERA_DELTAX, 
-      this.status.y + Math.sin(this.status.cameraAngle) * INIT_CAMERA_DISTANCE, 
-      this.status.z + Math.cos(this.status.cameraAngle) * INIT_CAMERA_DISTANCE);
+    this.status.cameraObject.position.set(
+      this.status.x + Math.sin(this.status.cameraTheta) * Math.sin(this.status.cameraPhi) * this.status.cameraDistance, 
+      this.status.y + Math.cos(this.status.cameraTheta) * this.status.cameraDistance, 
+      this.status.z + Math.sin(this.status.cameraTheta) * Math.cos(this.status.cameraPhi) * this.status.cameraDistance);
     this.status.cameraObject.lookAt(new THREE.Vector3(this.status.x, this.status.y, this.status.z));
   }
 

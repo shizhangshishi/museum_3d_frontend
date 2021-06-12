@@ -53,7 +53,9 @@ export default {
       username: "",
       globalConfig: {
         ws: null,
-        blockKey: false
+        blockKey: false,
+        mouseDown: false,
+        mousePosition: {x: 0, y: 0}
       },
 
       container:null,
@@ -108,8 +110,11 @@ export default {
       this.player = new Player(this.scene, "robot", width/height);
       this.camera = this.player.getCamera();
       this.initControls();
-      window.addEventListener('mousewheel', this.onMousewheel, false);
+      window.addEventListener('wheel', this.onWheel, false);
       window.addEventListener('resize', this.onResize, false);
+      window.addEventListener('mousedown', this.onMouseDown, false);
+      window.addEventListener('mousemove', this.onMouseMove, false);
+      window.addEventListener('mouseup', this.onMouseUp, false);
       this.container.addEventListener("click", this.onClick, false);
 
       this.environment = new Environment(this.scene);
@@ -210,8 +215,39 @@ export default {
       );
       this.controls.update();
     },
-    onMousewheel(event){
-      this.player.cameraRotate(event.wheelDelta);
+    onWheel(event){
+      this.player.cameraMove(-event.wheelDelta);
+    },
+    onMouseDown(event){
+      if (event.button == 1)
+      {
+        this.globalConfig.mouseDown = true;
+        this.globalConfig.mousePosition = {
+          x: event.clientX,
+          y: event.clientY
+        };
+      }
+    },
+    onMouseMove(event){
+      if (this.globalConfig.mouseDown)
+      {
+        let deltaX = event.clientX - this.globalConfig.mousePosition.x;
+        let deltaY = event.clientY - this.globalConfig.mousePosition.y;
+        this.globalConfig.mousePosition = {
+          x: event.clientX,
+          y: event.clientY
+        };
+        this.player.cameraRotate({
+          x: deltaX,
+          y: deltaY
+        });
+      }
+    },
+    onMouseUp(event){
+      if (event.button == 1)
+      {
+        this.globalConfig.mouseDown = false;
+      }
     },
     onResize(){
       this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
