@@ -2,7 +2,7 @@ import {FBXModel} from "@/js/museum/loadModel/externalModel";
 import * as THREE from "three";
 import {CSS2DObject} from "three/examples/jsm/renderers/CSS2DRenderer";
 
-const PATH = "/models/person/robot.fbx"
+const PATH = "/models/person/astronaut.fbx"
 export class Receptionist extends FBXModel{
     constructor(size, rotation) {
         super(PATH, size, rotation);

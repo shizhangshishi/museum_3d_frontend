@@ -23,7 +23,6 @@
 
 <script>
 import * as THREE from "three"
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import * as LIGHT from '@/js/museum/light'
 import {MUSEUM_CONFIG} from "@/constants/museum/museum";
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
