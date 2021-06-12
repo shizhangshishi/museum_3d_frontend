@@ -16,6 +16,8 @@ module.exports = {
     "devtool": "source-map"
   },
   "transpileDependencies": [
-    "vuetify"
+    "vuetify",
+    'vue-echarts',
+    'resize-detector'
   ]
 }
