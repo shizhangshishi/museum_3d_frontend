@@ -215,12 +215,14 @@ export class Player
     let box = new THREE.Box3().setFromObject(this.status.playerObject);
 
     let geometry = new THREE.BoxGeometry(box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
-    let vertices = geometry.vertices;
-    for (let idx = 0; idx < vertices.length; idx++)
+    let position = geometry.attributes.position;
+    let vector = new THREE.Vector3();
+
+    for (let idx = 0; idx < position.count; idx++)
     {
-      let localVertex = vertices[idx].clone();
-      let globalVertex = localVertex.applyMatrix4(this.status.playerObject.matrix);
-      let directionVector = globalVertex.sub(this.status.playerObject.position);
+      vector.fromBufferAttribute(position, idx);
+      vector.applyMatrix4(this.status.playerObject.matrix);
+      let directionVector = vector.sub(this.status.playerObject.position);
 
       let ray = new THREE.Raycaster(this.status.playerObject.position.clone(), directionVector.clone().normalize());
       let results = ray.intersectObjects(this.status.globalConfig.blockingObjects);
