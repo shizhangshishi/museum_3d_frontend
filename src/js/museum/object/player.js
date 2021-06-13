@@ -208,6 +208,7 @@ export class Player
   {
     this.status.x += delta.x;
     this.status.z += delta.z;
+    this.updateModel();
 
     let isCrashed = false;
 
@@ -223,11 +224,9 @@ export class Player
 
       let ray = new THREE.Raycaster(this.status.playerObject.position.clone(), directionVector.clone().normalize());
       let results = ray.intersectObjects(this.status.globalConfig.blockingObjects);
-      console.log(results);
       if (results.length > 0 && results[0].distance < directionVector.length())
       {
         isCrashed = true;
-        console.log("crash!\t\t" + idx);
         break;
       }
     }
@@ -236,6 +235,7 @@ export class Player
     {
       this.status.x -= delta.x;
       this.status.z -= delta.z;
+      this.updateModel();
     }
   }
 
