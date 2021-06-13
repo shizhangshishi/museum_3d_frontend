@@ -25,16 +25,18 @@ export class Architecture extends Mesh {
     setHallDoor(config, pavilionExternalSize){
         this.hall.walls.front.setDoorFrame(config.FRONT_DOOR.width, config.FRONT_DOOR.height, 0);
 
-        this.hall.walls.behind.setDoorFrame(
-            config.BEHIND_DOOR.width,
-            config.BEHIND_DOOR.height,
-            - pavilionExternalSize.width
-        );
-        this.hall.walls.behind.setDoorFrame(
-            config.BEHIND_DOOR.width,
-            config.BEHIND_DOOR.height,
-            pavilionExternalSize.width
-        );
+        this.hall.walls.behind.setDoorFrames([
+            {
+                width: config.BEHIND_DOOR.width,
+                height: config.BEHIND_DOOR.height,
+                x: -pavilionExternalSize.width
+            },
+            {
+                width: config.BEHIND_DOOR.width,
+                height: config.BEHIND_DOOR.height,
+                x: pavilionExternalSize.width
+            }
+        ]);
     }
     setPavilions(){
         // let config = this.config.PAVILIONS;

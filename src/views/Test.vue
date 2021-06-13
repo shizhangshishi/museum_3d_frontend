@@ -7,6 +7,8 @@
 
 
 import * as THREE from "three"
+import * as THREE110 from "three-110"
+import {Geometry} from "three/examples/jsm/deprecated/Geometry"
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 
@@ -15,8 +17,11 @@ import * as LIGHT from "@/js/museum/light";
 import {Player} from "@/js/museum/object/player"
 import {Receptionist} from "@/js/museum/architecture/components/hall/receptionist";
 import {Reference} from "@/js/museum/reference";
+import {BehindWall, RightWall, LeftWall, FrontWall} from "@/js/museum/architecture/components/wall";
 
-import * as EXHIBITIONS from "/public/museum/room/0/0.json"
+
+// THREE.Geometry = Geometry;
+const ThreeBsp = require("tthreebsp")(THREE110);
 
 export default {
   name: 'Test',
@@ -31,9 +36,46 @@ export default {
   },
   methods: {
     test(){
+      this.testBsp();
+    },
+    testWall(){
       let ref = new Reference();
       this.scene.add(ref);
-      console.log(EXHIBITIONS.default);
+
+      let wall = new BehindWall({width: 10_00, height: 5_00, depth: 50}, {x: 0, y: 0, z: -2_00});
+      wall.setDoorFrame(2_00, 2_00, 0);
+      wall.setDoorFrame(2_00, 2_00, 100);
+      this.scene.add(wall);
+    },
+    testBsp(){
+      let gem1 = new THREE110.BoxGeometry(100, 100, 200);
+      let mat1 = new THREE110.MeshLambertMaterial({color:"red"});
+      let mesh1 = new THREE110.Mesh(gem1, mat1);
+      mesh1.position.x += 200;
+
+      let gem2 = new THREE110.BoxGeometry(200, 200, 200);
+      let mat2 = new THREE110.MeshLambertMaterial({color:"gray"});
+      let mesh2 = new THREE110.Mesh(gem2, mat2);
+
+      let gem3 = new THREE110.BoxGeometry(600, 300, 200);
+      let mat3 = new THREE110.MeshLambertMaterial({color:"gray"});
+      let mesh3 = new THREE110.Mesh(gem3, mat3);
+
+
+      let bsp1 = new ThreeBsp(mesh1);
+      let bsp2 = new ThreeBsp(mesh2);
+      let bsp3 = new ThreeBsp(mesh3);
+
+      let resultBsp1 = bsp3.subtract(bsp1)
+      let resultBsp = resultBsp1.subtract(bsp2);
+      let result = resultBsp.toGeometry();
+      result.computeFaceNormals();
+      result.computeVertexNormals();
+
+      let gem = new THREE110.BufferGeometry().fromGeometry(result);
+      let mat = new THREE.MeshLambertMaterial({color:"blue"});
+      let mesh = new THREE.Mesh(gem, mat);
+      this.scene.add(mesh);
     },
     init(){
       this.container = document.getElementById("container");

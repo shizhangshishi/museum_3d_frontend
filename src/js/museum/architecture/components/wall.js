@@ -1,8 +1,7 @@
 import * as THREE from "three"
-import {Exhibition} from "@/js/museum/architecture/components/pavilion/exhitbition";
+import * as THREE110 from "three-110"
 
-
-const ThreeBsp = require("tthreebsp")(THREE);
+const ThreeBsp = require("tthreebsp")(THREE110);
 
 export class Wall extends THREE.Mesh{
     constructor(config, wallPosition) {
@@ -32,11 +31,7 @@ export class Wall extends THREE.Mesh{
 
     // 挖门框
     setDoorFrame(width, height, x){
-        let y = - (this.config.height - height) / 2;
-        this.hollow(width, height, x, y);
-    }
-    // 挖矩形洞
-    hollow(width, height, x, y){
+        let y = -(this.config.height - height) / 2;
         let hole = this.getHole(width, height, x, y);
         this.holes.push({
             width: width,
@@ -44,30 +39,76 @@ export class Wall extends THREE.Mesh{
             x: x,
             y: y,
         });
+        this.hollow(hole);
+    }
+    setDoorFrames(items){
+        let holes = this.getHoles(items);
+        this.hollowHoles(holes);
+    }
+    // 挖矩形洞
+    hollow(hole){
 
-        let wallBsp = new ThreeBsp(this);
+        let gem = new THREE110.BoxGeometry(this.config.width, this.config.height, this.config.depth);
+        let mat = new THREE110.MeshLambertMaterial({color: 0xafc0ca});
+        let wall = new THREE110.Mesh(gem, mat);
+
+        let wallBsp = new ThreeBsp(wall);
         let holeBsp = new ThreeBsp(hole);
         let resultBsp = wallBsp.subtract(holeBsp);
 
-        let result = resultBsp.toMesh();
-        result.geometry.computeFaceNormals();
-        result.geometry.computeVertexNormals();
 
-        this.geometry = result.geometry;
+        let result = resultBsp.toGeometry();
+        result.computeFaceNormals();
+        result.computeVertexNormals();
+
+        this.geometry = new THREE110.BufferGeometry().fromGeometry(result);
+        this.updateMorphTargets();
+    }
+    hollowHoles(holes){
+        let gem = new THREE110.BoxGeometry(this.config.width, this.config.height, this.config.depth);
+        let mat = new THREE110.MeshLambertMaterial({color: 0xafc0ca});
+        let wall = new THREE110.Mesh(gem, mat);
+        let resultBsp = new ThreeBsp(wall);
+
+        for (let hole of holes){
+            let holeBsp = new ThreeBsp(hole);
+            resultBsp = resultBsp.subtract(holeBsp);
+        }
+        let result = resultBsp.toGeometry();
+        result.computeFaceNormals();
+        result.computeVertexNormals();
+
+        this.geometry = new THREE110.BufferGeometry().fromGeometry(result);
         this.updateMorphTargets();
     }
     getHole(width, height, x, y){
-        let gem = new THREE.BoxGeometry(width, height, this.config.depth);
-        let mat = new THREE.MeshLambertMaterial({color: "red"});
-        let hole = new THREE.Mesh(gem, mat);
+        let gem = new THREE110.BoxGeometry(width, height, this.config.depth);
+        let mat = new THREE110.MeshLambertMaterial({color: "red"});
+        let hole = new THREE110.Mesh(gem, mat);
 
-        // hole.position
-        hole.position.x = this.position.x + x;
-        hole.position.y = this.position.y + y;
-        hole.position.z = this.position.z;
+        hole.position.x = x;
+        hole.position.y = y;
+
+        hole.rotation.x = this.rotation.x;
+        hole.rotation.y = this.rotation.y;
+        hole.rotation.z = this.rotation.z;
 
         return hole;
 
+    }
+    getHoles(items){
+        let holes = [];
+        for(let item of items){
+            let y = -(this.config.height - item.height) / 2;
+            holes.push(this.getHole(item.width, item.height, item.x, y));
+            this.holes.push({
+                width: item.width,
+                height: item.height,
+                x: item.x,
+                y: y,
+            });
+        }
+        return holes;
     }
 
     click(){
