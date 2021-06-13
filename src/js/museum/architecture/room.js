@@ -4,9 +4,10 @@ import * as WALL from "@/js/museum/architecture/components/wall"
 
 
 export class Room extends THREE.Mesh{
-    constructor(config) {
+    constructor(config, blockingObjects) {
         super();
         this.roomConfig = config.ROOM;
+        this.blockingObjects = blockingObjects;
         this.name = "房间";
 
         this.floor = null;
@@ -51,6 +52,7 @@ export class Room extends THREE.Mesh{
         let wall = new WALL.LeftWall(config, position);
         this.walls.left = wall;
         this.add(wall);
+        this.blockingObjects.push(wall);
     }
     setBehindWall(innerSize, wallDepth){
         let position = {
@@ -67,6 +69,7 @@ export class Room extends THREE.Mesh{
         let wall = new WALL.BehindWall(config, position);
         this.walls.behind = wall;
         this.add(wall);
+        this.blockingObjects.push(wall);
     }
     setRightWall(innerSize, wallDepth){
 
@@ -83,6 +86,7 @@ export class Room extends THREE.Mesh{
         let wall = new WALL.RightWall(config, position);
         this.walls.right = wall;
         this.add(wall);
+        this.blockingObjects.push(wall);
     }
     setFrontWall(innerSize, wallDepth){
 
@@ -99,6 +103,7 @@ export class Room extends THREE.Mesh{
         let wall = new WALL.FrontWall(config, position);
         this.walls.front = wall;
         this.add(wall);
+        this.blockingObjects.push(wall);
     }
 }
 Room.prototype.isRoom = true;

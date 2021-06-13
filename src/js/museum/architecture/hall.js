@@ -3,8 +3,8 @@ import {Reception} from "@/js/museum/architecture/components/hall/reception";
 import {Canteen} from "@/js/museum/architecture/components/hall/canteen";
 
 export class Hall extends Room{
-    constructor(config) {
-        super(config);
+    constructor(config, blockingObjects) {
+        super(config, blockingObjects);
         this.config = config;
         this.reception = null;
         this.canteen = null;

@@ -2,9 +2,10 @@ import {Mesh} from "three"
 import {Hall} from "@/js/museum/architecture/hall";
 import {Pavilion} from "@/js/museum/architecture/pavilion";
 export class Architecture extends Mesh {
-    constructor(config) {
+    constructor(config, blockingObjects) {
         super();
         this.config = config;
+        this.blockingObjects = blockingObjects;
         this.hall = null;
         this.pavilions = {};
 
@@ -16,7 +17,7 @@ export class Architecture extends Mesh {
     }
     setHall(){
         let config = this.config.HALL;
-        this.hall = new Hall(config);
+        this.hall = new Hall(config, this.blockingObjects);
         this.add(this.hall);
 
         this.setHallDoor(config.ROOM.DOOR, config.PAVILION_EXTERNAL_SIZE);
@@ -45,7 +46,7 @@ export class Architecture extends Mesh {
         let pavilions = [];
 
         for (let config of this.config.PAVILIONS){
-            let pavilion = new Pavilion(config);
+            let pavilion = new Pavilion(config, this.blockingObjects);
             pavilion.position.z -= offsetZ;
             pavilion.position.x += offsetX;
 

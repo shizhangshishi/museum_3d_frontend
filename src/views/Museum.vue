@@ -55,7 +55,8 @@ export default {
         ws: null,
         blockKey: false,
         mouseDown: false,
-        mousePosition: {x: 0, y: 0}
+        mousePosition: {x: 0, y: 0},
+        blockingObjects: []
       },
 
       container:null,
@@ -120,8 +121,10 @@ export default {
       this.environment = new Environment(this.scene);
     },
     buildMuseum(){
-      this.museum = new Museum(MUSEUM_CONFIG)
+      this.museum = new Museum(MUSEUM_CONFIG, this.globalConfig.blockingObjects);
       this.scene.add(this.museum);
+      
+      console.log(this.globalConfig.blockingObjects);
     },
     buildPerson(){
       this.buildNPC();

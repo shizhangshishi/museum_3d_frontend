@@ -3,8 +3,8 @@ import {Plant} from "@/js/museum/room/decoration/plant";
 import {ExhibitionAssembler} from "@/js/museum/architecture/components/pavilion/exhibitionAssembler";
 
 export class Pavilion extends Room{
-    constructor(config) {
-        super(config);
+    constructor(config, blockingObjects) {
+        super(config, blockingObjects);
         this.config = config;
         this.exhibitionAssemblers = [];
         // this.setPavilion();

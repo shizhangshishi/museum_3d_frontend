@@ -208,6 +208,35 @@ export class Player
   {
     this.status.x += delta.x;
     this.status.z += delta.z;
+
+    let isCrashed = false;
+
+    let box = new THREE.Box3().setFromObject(this.status.playerObject);
+
+    let geometry = new THREE.BoxGeometry(box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
+    let vertices = geometry.vertices;
+    for (let idx = 0; idx < vertices.length; idx++)
+    {
+      let localVertex = vertices[idx].clone();
+      let globalVertex = localVertex.applyMatrix4(this.status.playerObject.matrix);
+      let directionVector = globalVertex.sub(this.status.playerObject.position);
+
+      let ray = new THREE.Raycaster(this.status.playerObject.position.clone(), directionVector.clone().normalize());
+      let results = ray.intersectObjects(this.status.globalConfig.blockingObjects);
+      console.log(results);
+      if (results.length > 0 && results[0].distance < directionVector.length())
+      {
+        isCrashed = true;
+        console.log("crash!\t\t" + idx);
+        break;
+      }
+    }
+
+    if (isCrashed)
+    {
+      this.status.x -= delta.x;
+      this.status.z -= delta.z;
+    }
   }
 
   cameraMove(delta)
