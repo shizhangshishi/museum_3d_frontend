@@ -26,9 +26,6 @@ const INIT_POSITION_Y = 0;
 const INIT_POSITION_Z = 0;
 
 // 相机偏移
-//const INIT_CAMERA_DELTAX = 0;
-//const INIT_CAMERA_DELTAY = 800;
-//const INIT_CAMERA_DELTAZ = 600;
 const INIT_CAMERA_DISTANCE = 2000;
 const INIT_CAMERA_THETA = 1;
 const INIT_CAMERA_PHI = 0;
@@ -38,8 +35,8 @@ const CAMERA_DISTANCE_MIN = 0;
 const CAMERA_DISTANCE_MAX = 10000;
 const CAMERA_THETA_MIN = 0;
 const CAMERA_THETA_MAX = Math.PI / 2;
-const CAMERA_PHI_MIN = -Math.PI / 2;
-const CAMERA_PHI_MAX = Math.PI / 2;
+const CAMERA_PHI_MIN = -Math.PI;
+const CAMERA_PHI_MAX = Math.PI;
 
 // 名字偏移
 const INIT_TEXT_DELTAX = 0;
