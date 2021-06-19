@@ -2,21 +2,12 @@ import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 
-// 默认物品映射
-const defaultItems = {
-  door1: {
-    open: false
-  },
-  door2: {
-    open: false
-  },
-  door3: {
-    open: false
-  },
-  door4: {
-    open: false
-  }
-};
+import {DoorFactory} from "@/js/museum/object/item/door/doorFactory";
+
+// 物品工厂
+const Factories = {
+  DoorFactory: DoorFactory
+}
 
 // 模型地址映射
 const models = {
@@ -60,15 +51,36 @@ export class Environment
       friends: {},
       items: {},
       friendObjects: {},
+      itemObjects: {},
       nameDivs: {}
     };
 
-    this.loadDefaultItems();
+    this.buildItems();
   }
 
-  loadDefaultItems()
+  buildItems()
   {
-    this.status.items = defaultItems;
+    for (let factoryIdx in Factories)
+    {
+      console.log("working with " + factoryIdx);
+      let Factory = Factories[factoryIdx];
+      let factory = new Factory();
+      let items = factory.buildAll();
+      for (let itemIdx in items)
+      {
+        let item = items[itemIdx];
+        this.status.items[itemIdx] = item;
+      }
+    }
+
+    
+    for (let itemIdx in this.status.items)
+    {
+      let item = this.status.items[itemIdx];
+      item.init(mesh => {
+        this.status.scene.add(mesh);
+      });
+    }
   }
 
   addFriend(username)
