@@ -35,8 +35,8 @@ const CAMERA_DISTANCE_MIN = 0;
 const CAMERA_DISTANCE_MAX = 10000;
 const CAMERA_THETA_MIN = 0;
 const CAMERA_THETA_MAX = Math.PI / 2;
-const CAMERA_PHI_MIN = -Math.PI;
-const CAMERA_PHI_MAX = Math.PI;
+const CAMERA_PHI_MIN = -Infinity;
+const CAMERA_PHI_MAX = Infinity;
 
 // 名字偏移
 const INIT_TEXT_DELTAX = 0;
@@ -99,7 +99,7 @@ export class Player
           root.scale.set(INIT_SCALE_X, INIT_SCALE_Y, INIT_SCALE_Z);
 
           const div = document.createElement('div');
-          div.innerHTML = "玩家";
+          div.innerHTML = this.status.globalConfig.username;
           div.style.color = '#ffffaa';
           div.style.width = '80px';
           div.style.height = '40px';
@@ -110,6 +110,14 @@ export class Player
             INIT_POSITION_X + INIT_TEXT_DELTAX,
             INIT_POSITION_Y + INIT_TEXT_DELTAY,
             INIT_POSITION_Z + INIT_TEXT_DELTAZ);
+          
+          let box3 = new THREE.Box3();
+          box3.setFromObject(root);
+          let boxGeometry = new THREE.BoxGeometry(box3.getSize().x, 10, box3.getSize().z);
+          let boxMaterial = new THREE.MeshLambertMaterial({color: 0xffffaa, transparent: true, opacity: 0.2});
+          let box = new THREE.Mesh(boxGeometry, boxMaterial);
+          box.name = "玩家-碰撞箱";
+          root.add(box);
 
           callback();
       },
@@ -220,8 +228,7 @@ export class Player
 
     let box = new THREE.Box3().setFromObject(this.status.playerObject);
 
-    let border = ((box.max.x - box.min.x) > (box.max.z - box.min.z)) ? (box.max.x - box.min.x) : (box.max.z - box.min.z);
-    let geometry = new THREE.BoxGeometry(border, box.max.y - box.min.y, border);
+    let geometry = new THREE.BoxGeometry(box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
     let position = geometry.attributes.position;
     let vector = new THREE.Vector3();
 

@@ -50,8 +50,8 @@ export default {
   name: "Museum",
   data(){
     return{
-      username: "",
       globalConfig: {
+        username: "",
         ws: null,
         blockKey: false,
         mouseDown: false,
@@ -186,9 +186,9 @@ export default {
           {
             if (res.data.responseCode === Code.SUCCESS)
             {
-              this.username = res.data.responseBody.user.username;
+              this.globalConfig.username = res.data.responseBody.user.username;
 
-              this.globalConfig.ws = new WS(this.username, this.player, this.environment, this.messageBox);
+              this.globalConfig.ws = new WS(this.globalConfig.username, this.player, this.environment, this.messageBox);
             }
             else
             {

@@ -172,6 +172,14 @@ export class Environment
             INIT_POSITION_Y + INIT_TEXT_DELTAY, 
             INIT_POSITION_Z + INIT_TEXT_DELTAZ);
           this.status.nameDivs[username] = div;
+          
+          let box3 = new THREE.Box3();
+          box3.setFromObject(root);
+          let boxGeometry = new THREE.BoxGeometry(box3.getSize().x, 10, box3.getSize().z);
+          let boxMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, transparent: true, opacity: 0.2});
+          let box = new THREE.Mesh(boxGeometry, boxMaterial);
+          box.name = `友方玩家${username}-碰撞箱`;
+          root.add(box);
 
           callback();
       },
