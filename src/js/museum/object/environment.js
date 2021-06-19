@@ -37,16 +37,16 @@ const loader = new FBXLoader();
 
 export class Environment
 {
-  constructor(scene)
+  constructor(scene, globalConfig)
   {
-    this.init(scene);
+    this.init(scene, globalConfig);
     this.block = false;
   }
 
-  init(scene)
+  init(scene, globalConfig)
   {
     this.status = {
-      ws: null,
+      globalConfig: globalConfig,
       scene: scene,
       friends: {},
       friendObjects: {},
@@ -63,7 +63,7 @@ export class Environment
     {
       console.log("working with " + factoryIdx);
       let Factory = Factories[factoryIdx];
-      let factory = new Factory();
+      let factory = new Factory(this.status.globalConfig.blockingObjects);
       let itemObjects = factory.buildAll();
       for (let itemObjectIdx in itemObjects)
       {

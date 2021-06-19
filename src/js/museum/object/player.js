@@ -62,16 +62,16 @@ const loader = new FBXLoader();
 
 export class Player
 {
-  constructor(scene, modelName, aspect)
+  constructor(scene, modelName, aspect, globalConfig)
   {
-    this.init(scene, modelName, aspect);
+    this.init(scene, modelName, aspect, globalConfig);
   }
 
-  init(scene, modelName, aspect)
+  init(scene, modelName, aspect, globalConfig)
   {
     this.status = 
     {
-      globalConfig: null,
+      globalConfig: globalConfig,
       scene: scene,
       x: INIT_POSITION_X,
       y: INIT_POSITION_Y,

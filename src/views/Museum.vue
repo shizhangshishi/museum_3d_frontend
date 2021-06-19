@@ -108,7 +108,7 @@ export default {
       this.initRenderer(width, height);
       this.initScene();
       this.initLight();
-      this.player = new Player(this.scene, "robot", width/height);
+      this.player = new Player(this.scene, "robot", width/height, this.globalConfig);
       this.camera = this.player.getCamera();
       this.initControls();
       window.addEventListener('wheel', this.onWheel, false);
@@ -118,13 +118,11 @@ export default {
       window.addEventListener('mouseup', this.onMouseUp, false);
       this.container.addEventListener("click", this.onClick, false);
 
-      this.environment = new Environment(this.scene);
+      this.environment = new Environment(this.scene, this.globalConfig);
     },
     buildMuseum(){
       this.museum = new Museum(MUSEUM_CONFIG, this.globalConfig.blockingObjects);
       this.scene.add(this.museum);
-      
-      console.log(this.globalConfig.blockingObjects);
     },
     buildPerson(){
       this.buildNPC();
@@ -191,8 +189,6 @@ export default {
               this.username = res.data.responseBody.user.username;
 
               this.globalConfig.ws = new WS(this.username, this.player, this.environment, this.messageBox);
-              this.player.status.globalConfig = this.globalConfig;
-              this.environment.status.ws = this.globalConfig.ws;
             }
             else
             {
