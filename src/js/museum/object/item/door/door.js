@@ -3,10 +3,12 @@ import {Item} from "@/js/museum/object/item/item";
 
 export class Door extends Item
 {
-  constructor(config)
+  constructor(name, initialStatus, globalConfig)
   {
     super();
-    this.status = config;
+    this.name = name;
+    this.status = initialStatus;
+    this.globalConfig = globalConfig;
 
     this.geometry = new THREE.BoxGeometry(this.status.width, this.status.height, this.status.depth);
     this.material = new THREE.MeshBasicMaterial({color: 0x708090});
@@ -25,6 +27,7 @@ export class Door extends Item
     {
       console.log("门关了");
     }
+    this.globalConfig.ws.sendItemPosition(this.name, this.status);
   }
 
   hoverMessage()

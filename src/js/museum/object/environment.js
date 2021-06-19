@@ -63,7 +63,7 @@ export class Environment
     {
       console.log("working with " + factoryIdx);
       let Factory = Factories[factoryIdx];
-      let factory = new Factory(this.status.globalConfig.blockingObjects);
+      let factory = new Factory(this.status.globalConfig);
       let itemObjects = factory.buildAll();
       for (let itemObjectIdx in itemObjects)
       {
@@ -73,6 +73,13 @@ export class Environment
         this.status.scene.add(itemObject);
       }
     }
+  }
+
+  updateItem(name, status)
+  {
+    let itemObject = this.status.itemObjects[name];
+    itemObject.status = status;
+    itemObject.updateModel();
   }
 
   addFriend(username)

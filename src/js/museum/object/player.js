@@ -287,7 +287,7 @@ export class Player
 
   sendPosition()
   {
-    if (this.status.globalConfig.ws !== null)
+    if (this.status.globalConfig && this.status.globalConfig.ws !== null)
     {
       this.status.globalConfig.ws.sendMyPosition({
         x: this.status.x,

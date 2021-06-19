@@ -5,10 +5,10 @@ import {DOOR} from "@/constants/item/door/door"
 
 export class DoorFactory extends ItemFactory
 {
-    constructor(blockingObjects)
+    constructor(globalConfig)
     {
         super();
-        this.blockingObjects = blockingObjects;
+        this.globalConfig = globalConfig;
     }
 
     buildAll()
@@ -17,11 +17,11 @@ export class DoorFactory extends ItemFactory
 
         for (let idx in DOOR)
         {
-            let config = DOOR[idx];
-            let name = config.name;
-            let door = new Door(config);
+            let initialStatus = DOOR[idx];
+            let name = initialStatus.name;
+            let door = new Door(name, initialStatus, this.globalConfig);
             doors[name] = door;
-            this.blockingObjects.push(door);
+            this.globalConfig.blockingObjects.push(door);
         }
 
         return doors;
