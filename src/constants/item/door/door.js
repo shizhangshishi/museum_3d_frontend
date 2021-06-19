@@ -11,7 +11,7 @@ export const DOOR = {
         openX: -250,
         openY: 0,
         openZ: 875,
-        openRotationY: -Math.PI / 2,
+        openRotationY: Math.PI / 2,
         isOpen: false
     },
     HALL_FRONT_RIGHT_DOOR: {

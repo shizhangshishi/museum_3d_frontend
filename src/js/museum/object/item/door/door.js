@@ -11,7 +11,7 @@ export class Door extends Item
     this.globalConfig = globalConfig;
 
     this.geometry = new THREE.BoxGeometry(this.status.width, this.status.height, this.status.depth);
-    this.material = new THREE.MeshBasicMaterial({color: 0x708090});
+    this.material = new THREE.MeshBasicMaterial({color: 0x708090, transparent: true, opacity: 0.5});
     this.updateModel();
   }
 
