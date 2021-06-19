@@ -4,9 +4,10 @@ import {Receptionist} from "@/js/museum/architecture/components/hall/receptionis
 
 
 export class Reception extends THREE.Mesh{
-    constructor(config) {
+    constructor(config, blockingObjects) {
         super();
         this.config = config;
+        this.blockingObjects = blockingObjects;
         this.frontTable = null;
         this.receptionist = null;
 
@@ -18,7 +19,7 @@ export class Reception extends THREE.Mesh{
     }
     setFrontTable(){
         let config = this.config.FRONT_TABLE;
-        this.frontTable = new FrontTable(config, {x: 0, y: Math.PI, z: 0});
+        this.frontTable = new FrontTable(config, {x: 0, y: Math.PI, z: 0}, this.blockingObjects);
         this.add(this.frontTable);
     }
     setReceptionist(){

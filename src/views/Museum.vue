@@ -266,6 +266,7 @@ export default {
       if(intersects.length !== 0){
         this.handleIntersectsClick(intersects);
       }
+      console.log(this.globalConfig)
     },
     getIntersects(event){
       let rayCaster = new THREE.Raycaster();
