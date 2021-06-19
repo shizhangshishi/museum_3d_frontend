@@ -1,6 +1,6 @@
 export class ItemFactory
 {
-    buildAll()
+    buildAll(callback)
     {
         console.log("you built in a raw item factory");
     }

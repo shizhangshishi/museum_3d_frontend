@@ -18,6 +18,7 @@
          :showNpc.sync="showNpc"
     ></Npc>
     <Chat :globalConfig.sync="globalConfig" :messageBox.sync="messageBox"></Chat>
+    <span id="mouseFollower"></span>
   </div>
 </template>
 
@@ -244,6 +245,11 @@ export default {
           y: deltaY
         });
       }
+
+      let intersects = this.getIntersects(event);
+      if(intersects.length !== 0){
+        this.handleIntersectsHover(intersects);
+      }
     },
     onMouseUp(event){
       if (event.button == 1)
@@ -262,7 +268,7 @@ export default {
       console.log("被点击了");
       let intersects = this.getIntersects(event);
       if(intersects.length !== 0){
-        this.handleIntersects(intersects);
+        this.handleIntersectsClick(intersects);
       }
     },
     getIntersects(event){
@@ -277,18 +283,67 @@ export default {
       return  rayCaster.intersectObjects(this.scene.children, true);
     },
 
-    handleIntersects(intersects){
+    handleIntersectsClick(intersects){
       let obj = intersects[0].object;
       console.log("被点击的对象是：");
       console.log(obj);
-      if (obj.parent.isExhibition){
-        this.exhibition = obj.parent.item;
-        this.showExhibition = true;
+      if (obj.onClick != undefined)
+      {
+        // 触发物品的点击事件
+        obj.onClick();
+      }
+      else
+      {
+        if (obj.parent.isExhibition){
+          this.exhibition = obj.parent.item;
+          this.showExhibition = true;
+        }
+
+        if (obj.parent.parent.isReceptionist){
+          this.showNpc = true;
+        }
+      }
+    },
+    
+    handleIntersectsHover(intersects){
+      let cursor = "default";
+      let display = "none";
+      let innerText = "";
+
+      let mouseFollower = document.getElementById("mouseFollower");
+      mouseFollower.style.left = window.event.clientX + "px";
+      mouseFollower.style.top = window.event.clientY + "px";
+
+      let obj = intersects[0].object;
+      if (obj.onHover != undefined)
+      {
+        // 根据物品的设定改变提示框的显示
+        let message = obj.hoverMessage();
+        cursor = message.style.cursor;
+        display = message.style.display;
+        innerText = message.innerText;
+
+        // 触发物品的悬浮事件
+        obj.onHover();
+      }
+      else
+      {
+        if (obj.parent.isExhibition){
+          cursor = "pointer";
+          display = "block";
+          innerText = "查看展品：《" + obj.parent.item.name + "》";
+        }
+
+        if (obj.parent.parent.isReceptionist){
+          cursor = "pointer";
+          display = "block";
+          innerText = "与接待员对话";
+        }
       }
 
-      if (obj.parent.parent.isReceptionist){
-        this.showNpc = true;
-      }
+      document.body.style.cursor = cursor;
+      mouseFollower.style.display = display;
+      mouseFollower.innerText = innerText;
     },
 
 
@@ -302,5 +357,12 @@ export default {
   height: 100vh;
   width: 100%;
   position: relative;
+}
+
+#mouseFollower{
+  position: fixed;
+  padding: 0.5em;
+  background: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
 }
 </style>

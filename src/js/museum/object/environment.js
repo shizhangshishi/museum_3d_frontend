@@ -49,7 +49,6 @@ export class Environment
       ws: null,
       scene: scene,
       friends: {},
-      items: {},
       friendObjects: {},
       itemObjects: {},
       nameDivs: {}
@@ -65,21 +64,14 @@ export class Environment
       console.log("working with " + factoryIdx);
       let Factory = Factories[factoryIdx];
       let factory = new Factory();
-      let items = factory.buildAll();
-      for (let itemIdx in items)
+      let itemObjects = factory.buildAll();
+      for (let itemObjectIdx in itemObjects)
       {
-        let item = items[itemIdx];
-        this.status.items[itemIdx] = item;
+        let itemObject = itemObjects[itemObjectIdx];
+        this.status.itemObjects[itemObjectIdx] = itemObject;
+        console.log(itemObject);
+        this.status.scene.add(itemObject);
       }
-    }
-
-    
-    for (let itemIdx in this.status.items)
-    {
-      let item = this.status.items[itemIdx];
-      item.init(mesh => {
-        this.status.scene.add(mesh);
-      });
     }
   }
 
@@ -133,7 +125,13 @@ export class Environment
   {
     // 同步其它玩家和物品信息
     this.status.friends = friends;
-    this.status.items = items;
+    for (let idx in items)
+    {
+      let item = items[idx];
+      let itemObject = this.status.itemObjects[idx];
+      itemObject.status = item;
+      itemObject.updateModel();
+    }
   
     this.status.friendObjects = {};
     for (let username in this.status.friends)

@@ -7,20 +7,16 @@ export class Door extends Item
   {
     super();
     this.status = config;
-  }
 
-  init(callback)
-  {
-    const geometry = new THREE.BoxGeometry(this.status.width, this.status.height, this.status.depth);
-    const material = new THREE.MeshBasicMaterial({color: 0x9370db});
-    const mesh = new THREE.Mesh(geometry, material);
-    this.updateModel(mesh);
-    callback(mesh);
+    this.geometry = new THREE.BoxGeometry(this.status.width, this.status.height, this.status.depth);
+    this.material = new THREE.MeshBasicMaterial({color: 0x708090});
+    this.updateModel();
   }
 
   onClick()
   {
     this.status.isOpen = !this.status.isOpen;
+    this.updateModel();
     if (this.status.isOpen)
     {
       console.log("门开了");
@@ -31,19 +27,77 @@ export class Door extends Item
     }
   }
 
-  updateModel(mesh)
+  hoverMessage()
   {
+    let message = super.hoverMessage();
     if (this.status.isOpen)
     {
-      mesh.position.x = this.status.openX;
-      mesh.position.y = this.status.openY;
-      mesh.position.z = this.status.openZ;
+      message.innerText = "关上门";
     }
     else
     {
-      mesh.position.x = this.status.closeX;
-      mesh.position.y = this.status.closeY;
-      mesh.position.z = this.status.closeZ;
+      message.innerText = "打开门";
+    }
+    return message;
+  }
+
+  onHover()
+  {
+    // 实现鼠标悬浮时的颜色变亮与逐渐淡出
+    if (this.hoverStatus && this.hoverStatus.on)
+    {
+      clearInterval(this.hoverStatus.interval);
+      clearTimeout(this.hoverStatus.timeout);
+    }
+
+    this.hoverStatus = {
+      on: true,
+      count: 40,
+      interval: null,
+      timeout: null
+    };
+
+    let originColor = 0x708090;
+    let step = 0x010101;
+    let totalTime = 2000;
+
+    this.material.color.setHex( originColor + step * this.hoverStatus.count);
+
+    let interval = setInterval(() => {
+      this.material.color.setHex( originColor + step * (--this.hoverStatus.count));
+    }, totalTime / this.hoverStatus.count);
+
+    let timeout = setTimeout(() => {
+      clearInterval(interval);
+      this.material.color.setHex( originColor );
+      
+      this.hoverStatus = {
+        on: true,
+        count: 40,
+        interval: null,
+        timeout: null
+      };
+    }, totalTime);
+
+    this.hoverStatus.interval = interval;
+    this.hoverStatus.timeout = timeout;
+  }
+
+  updateModel()
+  {
+    if (this.status.isOpen)
+    {
+      this.position.x = this.status.openX;
+      this.position.y = this.status.openY;
+      this.position.z = this.status.openZ;
+      this.rotation.y = this.status.openRotationY;
+    }
+    else
+    {
+      this.position.x = this.status.closeX;
+      this.position.y = this.status.closeY;
+      this.position.z = this.status.closeZ;
+      this.rotation.y = this.status.closeRotationY;
     }
   }
 }
