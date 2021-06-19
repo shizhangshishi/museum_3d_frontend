@@ -154,26 +154,30 @@ export class Player
         {
           case (keys.a):
           case (keys.left):
-            delta.x = -MOVE_STEP;
+            delta.x = -Math.cos(this.status.cameraPhi) * MOVE_STEP;
+            delta.z = Math.sin(this.status.cameraPhi) * MOVE_STEP;
             break;
           case (keys.w):
           case (keys.up):
-            delta.z = -MOVE_STEP;
+            delta.z = -Math.cos(this.status.cameraPhi) * MOVE_STEP;
+            delta.x = -Math.sin(this.status.cameraPhi) * MOVE_STEP;
             break;
           case (keys.d):
           case (keys.right):
-            delta.x = MOVE_STEP;
+            delta.x = Math.cos(this.status.cameraPhi) * MOVE_STEP;
+            delta.z = -Math.sin(this.status.cameraPhi) * MOVE_STEP;
             break;
           case (keys.s):
           case (keys.down):
-            delta.z = MOVE_STEP;
+            delta.z = Math.cos(this.status.cameraPhi) * MOVE_STEP;
+            delta.x = Math.sin(this.status.cameraPhi) * MOVE_STEP;
             break;
           case (keys.enter):
             console.log("hit enter")
             break;
         }
   
-        this.rotate(delta);
+        this.rotate(key);
         this.move(delta);
         this.updateModel();
         this.sendPosition();
@@ -181,23 +185,28 @@ export class Player
     }
   }
 
-  rotate(delta)
+  rotate(key)
   {
-    if (delta.z > 0)
+    switch (key)
     {
-      this.status.rotationY = 0;
-    }
-    else if (delta.x > 0)
-    {
-      this.status.rotationY = Math.PI / 2;
-    }
-    else if (delta.z < 0)
-    {
-      this.status.rotationY = Math.PI;
-    }
-    else if (delta.x < 0)
-    {
-      this.status.rotationY = 3 * Math.PI / 2;
+      case (keys.s):
+      case (keys.down):
+        this.status.rotationY = 0 + this.status.cameraPhi;
+        break;
+      case (keys.d):
+      case (keys.right):
+        this.status.rotationY = Math.PI / 2 + this.status.cameraPhi;
+        break;
+        case (keys.w):
+        case (keys.up):
+        this.status.rotationY = Math.PI + this.status.cameraPhi;
+        break;
+      case (keys.a):
+      case (keys.left):
+        this.status.rotationY = 3 * Math.PI / 2 + this.status.cameraPhi;
+        break;
+      case (keys.enter):
+        break;
     }
   }
 
@@ -211,7 +220,8 @@ export class Player
 
     let box = new THREE.Box3().setFromObject(this.status.playerObject);
 
-    let geometry = new THREE.BoxGeometry(box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
+    let border = ((box.max.x - box.min.x) > (box.max.z - box.min.z)) ? (box.max.x - box.min.x) : (box.max.z - box.min.z);
+    let geometry = new THREE.BoxGeometry(border, box.max.y - box.min.y, border);
     let position = geometry.attributes.position;
     let vector = new THREE.Vector3();
 
