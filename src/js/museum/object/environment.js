@@ -2,21 +2,12 @@ import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 
-// 默认物品映射
-const defaultItems = {
-  door1: {
-    open: false
-  },
-  door2: {
-    open: false
-  },
-  door3: {
-    open: false
-  },
-  door4: {
-    open: false
-  }
-};
+import {DoorFactory} from "@/js/museum/object/item/door/doorFactory";
+
+// 物品工厂
+const Factories = {
+  DoorFactory: DoorFactory
+}
 
 // 模型地址映射
 const models = {
@@ -46,29 +37,49 @@ const loader = new FBXLoader();
 
 export class Environment
 {
-  constructor(scene)
+  constructor(scene, globalConfig)
   {
-    this.init(scene);
+    this.init(scene, globalConfig);
     this.block = false;
   }
 
-  init(scene)
+  init(scene, globalConfig)
   {
     this.status = {
-      ws: null,
+      globalConfig: globalConfig,
       scene: scene,
       friends: {},
-      items: {},
       friendObjects: {},
+      itemObjects: {},
       nameDivs: {}
     };
 
-    this.loadDefaultItems();
+    this.buildItems();
   }
 
-  loadDefaultItems()
+  buildItems()
   {
-    this.status.items = defaultItems;
+    for (let factoryIdx in Factories)
+    {
+      console.log("working with " + factoryIdx);
+      let Factory = Factories[factoryIdx];
+      let factory = new Factory(this.status.globalConfig);
+      let itemObjects = factory.buildAll();
+      for (let itemObjectIdx in itemObjects)
+      {
+        let itemObject = itemObjects[itemObjectIdx];
+        this.status.itemObjects[itemObjectIdx] = itemObject;
+        console.log(itemObject);
+        this.status.scene.add(itemObject);
+      }
+    }
+  }
+
+  updateItem(name, status)
+  {
+    let itemObject = this.status.itemObjects[name];
+    itemObject.status = status;
+    itemObject.updateModel();
   }
 
   addFriend(username)
@@ -121,7 +132,13 @@ export class Environment
   {
     // 同步其它玩家和物品信息
     this.status.friends = friends;
-    this.status.items = items;
+    for (let idx in items)
+    {
+      let item = items[idx];
+      let itemObject = this.status.itemObjects[idx];
+      itemObject.status = item;
+      itemObject.updateModel();
+    }
   
     this.status.friendObjects = {};
     for (let username in this.status.friends)
@@ -155,6 +172,14 @@ export class Environment
             INIT_POSITION_Y + INIT_TEXT_DELTAY, 
             INIT_POSITION_Z + INIT_TEXT_DELTAZ);
           this.status.nameDivs[username] = div;
+          
+          let box3 = new THREE.Box3();
+          box3.setFromObject(root);
+          let boxGeometry = new THREE.BoxGeometry(box3.getSize().x, 10, box3.getSize().z);
+          let boxMaterial = new THREE.MeshLambertMaterial({color: 0xffffff, transparent: true, opacity: 0.2});
+          let box = new THREE.Mesh(boxGeometry, boxMaterial);
+          box.name = `友方玩家${username}-碰撞箱`;
+          root.add(box);
 
           callback();
       },

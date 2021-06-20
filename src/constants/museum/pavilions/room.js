@@ -15,8 +15,8 @@ const EXTERNAL_SIZE = {
 
 
 const DOOR = {
-    width: 2_00,
-    height: 2_50,
+    width: 3_00,
+    height: 3_00,
     depth: 10,
 }
 

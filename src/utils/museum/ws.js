@@ -97,6 +97,7 @@ export default class WS
             case(SubTypes.item):
             default:
                 // 收到物品状态改变的信息
+                this.environment.updateItem(data.name, data.status);
                 break;
         }
     }
@@ -128,6 +129,7 @@ export default class WS
 
     sendAllPosition()
     {
+        // 目前在场所有玩家的位置信息
         let friendsAndSelf = JSON.parse(JSON.stringify(this.environment.status.friends));
         friendsAndSelf[this.username] = {
             x: this.player.status.x,
@@ -135,13 +137,34 @@ export default class WS
             z: this.player.status.z,
             rotationY: this.player.status.rotationY,
         };
+
+        // 物品的位置信息
+        let items = {};
+        for (let itemObjectIdx in this.environment.status.itemObjects)
+        {
+            let itemObject = this.environment.status.itemObjects[itemObjectIdx];
+            items[itemObjectIdx] = itemObject.status;
+        }
+
+        console.log(items);
+
         this.send({
             messageType: MessageTypes.position,
             subType: SubTypes.all,
             status: {
                 friends: friendsAndSelf,
-                items: this.environment.status.items
+                items: items
             }
+        });
+    }
+
+    sendItemPosition(name, status)
+    {
+        this.send({
+            messageType: MessageTypes.position,
+            subType: SubTypes.item,
+            name: name,
+            status: status
         });
     }
 }

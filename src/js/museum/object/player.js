@@ -26,9 +26,6 @@ const INIT_POSITION_Y = 0;
 const INIT_POSITION_Z = 0;
 
 // 相机偏移
-//const INIT_CAMERA_DELTAX = 0;
-//const INIT_CAMERA_DELTAY = 800;
-//const INIT_CAMERA_DELTAZ = 600;
 const INIT_CAMERA_DISTANCE = 2000;
 const INIT_CAMERA_THETA = 1;
 const INIT_CAMERA_PHI = 0;
@@ -38,8 +35,8 @@ const CAMERA_DISTANCE_MIN = 0;
 const CAMERA_DISTANCE_MAX = 10000;
 const CAMERA_THETA_MIN = 0;
 const CAMERA_THETA_MAX = Math.PI / 2;
-const CAMERA_PHI_MIN = -Math.PI / 2;
-const CAMERA_PHI_MAX = Math.PI / 2;
+const CAMERA_PHI_MIN = -Infinity;
+const CAMERA_PHI_MAX = Infinity;
 
 // 名字偏移
 const INIT_TEXT_DELTAX = 0;
@@ -62,16 +59,16 @@ const loader = new FBXLoader();
 
 export class Player
 {
-  constructor(scene, modelName, aspect)
+  constructor(scene, modelName, aspect, globalConfig)
   {
-    this.init(scene, modelName, aspect);
+    this.init(scene, modelName, aspect, globalConfig);
   }
 
-  init(scene, modelName, aspect)
+  init(scene, modelName, aspect, globalConfig)
   {
     this.status = 
     {
-      globalConfig: null,
+      globalConfig: globalConfig,
       scene: scene,
       x: INIT_POSITION_X,
       y: INIT_POSITION_Y,
@@ -102,7 +99,7 @@ export class Player
           root.scale.set(INIT_SCALE_X, INIT_SCALE_Y, INIT_SCALE_Z);
 
           const div = document.createElement('div');
-          div.innerHTML = "玩家";
+          div.innerHTML = this.status.globalConfig.username;
           div.style.color = '#ffffaa';
           div.style.width = '80px';
           div.style.height = '40px';
@@ -113,6 +110,14 @@ export class Player
             INIT_POSITION_X + INIT_TEXT_DELTAX,
             INIT_POSITION_Y + INIT_TEXT_DELTAY,
             INIT_POSITION_Z + INIT_TEXT_DELTAZ);
+          
+          let box3 = new THREE.Box3();
+          box3.setFromObject(root);
+          let boxGeometry = new THREE.BoxGeometry(box3.getSize().x, 10, box3.getSize().z);
+          let boxMaterial = new THREE.MeshLambertMaterial({color: 0xffffaa, transparent: true, opacity: 0.2});
+          let box = new THREE.Mesh(boxGeometry, boxMaterial);
+          box.name = "玩家-碰撞箱";
+          root.add(box);
 
           callback();
       },
@@ -157,26 +162,30 @@ export class Player
         {
           case (keys.a):
           case (keys.left):
-            delta.x = -MOVE_STEP;
+            delta.x = -Math.cos(this.status.cameraPhi) * MOVE_STEP;
+            delta.z = Math.sin(this.status.cameraPhi) * MOVE_STEP;
             break;
           case (keys.w):
           case (keys.up):
-            delta.z = -MOVE_STEP;
+            delta.z = -Math.cos(this.status.cameraPhi) * MOVE_STEP;
+            delta.x = -Math.sin(this.status.cameraPhi) * MOVE_STEP;
             break;
           case (keys.d):
           case (keys.right):
-            delta.x = MOVE_STEP;
+            delta.x = Math.cos(this.status.cameraPhi) * MOVE_STEP;
+            delta.z = -Math.sin(this.status.cameraPhi) * MOVE_STEP;
             break;
           case (keys.s):
           case (keys.down):
-            delta.z = MOVE_STEP;
+            delta.z = Math.cos(this.status.cameraPhi) * MOVE_STEP;
+            delta.x = Math.sin(this.status.cameraPhi) * MOVE_STEP;
             break;
           case (keys.enter):
             console.log("hit enter")
             break;
         }
   
-        this.rotate(delta);
+        this.rotate(key);
         this.move(delta);
         this.updateModel();
         this.sendPosition();
@@ -184,23 +193,28 @@ export class Player
     }
   }
 
-  rotate(delta)
+  rotate(key)
   {
-    if (delta.z > 0)
+    switch (key)
     {
-      this.status.rotationY = 0;
-    }
-    else if (delta.x > 0)
-    {
-      this.status.rotationY = Math.PI / 2;
-    }
-    else if (delta.z < 0)
-    {
-      this.status.rotationY = Math.PI;
-    }
-    else if (delta.x < 0)
-    {
-      this.status.rotationY = 3 * Math.PI / 2;
+      case (keys.s):
+      case (keys.down):
+        this.status.rotationY = 0 + this.status.cameraPhi;
+        break;
+      case (keys.d):
+      case (keys.right):
+        this.status.rotationY = Math.PI / 2 + this.status.cameraPhi;
+        break;
+        case (keys.w):
+        case (keys.up):
+        this.status.rotationY = Math.PI + this.status.cameraPhi;
+        break;
+      case (keys.a):
+      case (keys.left):
+        this.status.rotationY = 3 * Math.PI / 2 + this.status.cameraPhi;
+        break;
+      case (keys.enter):
+        break;
     }
   }
 
@@ -208,6 +222,37 @@ export class Player
   {
     this.status.x += delta.x;
     this.status.z += delta.z;
+    this.updateModel();
+
+    let isCrashed = false;
+
+    let box = new THREE.Box3().setFromObject(this.status.playerObject);
+
+    let geometry = new THREE.BoxGeometry(box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
+    let position = geometry.attributes.position;
+    let vector = new THREE.Vector3();
+
+    for (let idx = 0; idx < position.count; idx++)
+    {
+      vector.fromBufferAttribute(position, idx);
+      vector.applyMatrix4(this.status.playerObject.matrix);
+      let directionVector = vector.sub(this.status.playerObject.position);
+
+      let ray = new THREE.Raycaster(this.status.playerObject.position.clone(), directionVector.clone().normalize());
+      let results = ray.intersectObjects(this.status.globalConfig.blockingObjects);
+      if (results.length > 0 && results[0].distance < directionVector.length())
+      {
+        isCrashed = true;
+        break;
+      }
+    }
+
+    if (isCrashed)
+    {
+      this.status.x -= delta.x;
+      this.status.z -= delta.z;
+      this.updateModel();
+    }
   }
 
   cameraMove(delta)
@@ -256,7 +301,7 @@ export class Player
 
   sendPosition()
   {
-    if (this.status.globalConfig.ws !== null)
+    if (this.status.globalConfig && this.status.globalConfig.ws !== null)
     {
       this.status.globalConfig.ws.sendMyPosition({
         x: this.status.x,

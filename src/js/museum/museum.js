@@ -3,9 +3,10 @@ import {Floor} from "@/js/museum/floor";
 import {Architecture} from "@/js/museum/architecture/architecture";
 
 export class Museum extends THREE.Mesh {
-    constructor(config) {
+    constructor(config, blockingObjects) {
         super();
         this.config = config;
+        this.blockingObjects = blockingObjects;
 
         this.floor = null;
         this.architecture = null;
@@ -24,7 +25,7 @@ export class Museum extends THREE.Mesh {
         this.floor.load();
     }
     setArchitecture(){
-        this.architecture = new Architecture(this.config.ARCHITECTURE);
+        this.architecture = new Architecture(this.config.ARCHITECTURE, this.blockingObjects);
         this.add(this.architecture);
         this.architecture.load();
     }

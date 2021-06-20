@@ -15,15 +15,13 @@
         </v-card-title>
         <v-card-text>
           <v-row>
-            <v-col>
-              <v-btn text @click="question(1)" color="primary">核科学知识展区</v-btn>
-            </v-col>
-            <v-col>
-              <v-btn text @click="question(2)" color="primary">切尔诺贝利展区</v-btn>
-            </v-col>
-            <v-col>
-              <v-btn text @click="question(3)" color="primary">福岛核泄漏展区</v-btn>
-            </v-col>
+            <v-btn text @click="question(1)" color="primary" width="100%">核科学知识展区</v-btn>
+          </v-row>
+          <v-row>
+            <v-btn text @click="question(2)" color="primary" width="100%">切尔诺贝利展区</v-btn>
+          </v-row>
+          <v-row>
+            <v-btn text @click="question(3)" color="primary" width="100%">福岛核泄漏展区</v-btn>
           </v-row>
         </v-card-text>
       </v-card>

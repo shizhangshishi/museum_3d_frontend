@@ -3,8 +3,8 @@ import {Reception} from "@/js/museum/architecture/components/hall/reception";
 import {Canteen} from "@/js/museum/architecture/components/hall/canteen";
 
 export class Hall extends Room{
-    constructor(config) {
-        super(config);
+    constructor(config, blockingObjects) {
+        super(config, blockingObjects);
         this.config = config;
         this.reception = null;
         this.canteen = null;
@@ -18,7 +18,7 @@ export class Hall extends Room{
     }
     setReception(){
         let config = this.config.RECEPTION;
-        this.reception = new Reception(config);
+        this.reception = new Reception(config, this.blockingObjects);
         // this.reception.rotation.y += 0.5 * Math.PI;
 
         let innerSize = this.config.ROOM.INNER_SIZE;
