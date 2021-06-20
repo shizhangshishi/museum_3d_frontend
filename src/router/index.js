@@ -10,8 +10,6 @@ import Museum from '@/views/Museum';
 import Question from "@/views/Question";
 import Error from '@/views/Error';
 
-import Test from '@/views/Test'
-import TestMuseum from "@/views/TestMuseum";
 
 Vue.use(VueRouter)
 
@@ -59,16 +57,6 @@ const routes = [
     path: '/error/:id',
     name: 'Error',
     component: Error
-  },
-  {
-    path: '/test',
-    name: 'Test',
-    component: Test
-  },
-  {
-    path: '/test-museum',
-    name: 'TestMuseum',
-    component: TestMuseum
   }
 ]
 

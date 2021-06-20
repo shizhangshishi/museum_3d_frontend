@@ -42,7 +42,7 @@ const FRONT_TABLE = {
 }
 const RECEPTIONIST = {
     width: 100,
-    height: 240,
+    height: 180,
     depth: 60,
 }
 const RECEPTION = {
