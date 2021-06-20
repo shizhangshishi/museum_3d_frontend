@@ -1,15 +1,12 @@
 <template>
   <div id="container">
     <BtnArea  :showSetting.sync="showSetting" :showMap.sync="showMap"></BtnArea>
-
     <Setting v-if="showSetting"
              :showSetting.sync="showSetting"
     ></Setting>
-
     <Map v-if="showMap"
          :showMap.sync="showMap"
     ></Map>
-
     <Exhibition v-if="showExhibition"
                 :exhibition="exhibition"
                 :showExhibition.sync="showExhibition"
@@ -26,7 +23,7 @@
 import * as THREE from "three"
 import * as LIGHT from '@/js/museum/light'
 import {MUSEUM_CONFIG} from "@/constants/museum/museum";
-import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
+import {CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 
 
 import {Museum} from "@/js/museum/museum";
@@ -93,8 +90,6 @@ export default {
 
     this.init();
     this.buildMuseum();
-
-    this.buildPerson();
     this.animate();
 
     this.setUpWS();
@@ -110,7 +105,6 @@ export default {
       this.initLight();
       this.player = new Player(this.scene, "robot", width/height, this.globalConfig);
       this.camera = this.player.getCamera();
-      this.initControls();
       window.addEventListener('wheel', this.onWheel, false);
       window.addEventListener('resize', this.onResize, false);
       window.addEventListener('mousedown', this.onMouseDown, false);
@@ -123,16 +117,6 @@ export default {
     buildMuseum(){
       this.museum = new Museum(MUSEUM_CONFIG, this.globalConfig.blockingObjects);
       this.scene.add(this.museum);
-    },
-    buildPerson(){
-      this.buildNPC();
-      this.buildVisitor();
-    },
-    buildNPC(){
-
-    },
-    buildVisitor(){
-
     },
     animate(){
       requestAnimationFrame(this.animate);
@@ -157,19 +141,6 @@ export default {
     },
     initScene(){
       this.scene = new THREE.Scene();
-      // this.scene.fog = new THREE.Fog(this.scene.background, 3000, 6000);
-    },
-    /*
-    initCamera(k){
-      this.camera = new THREE.PerspectiveCamera(45, k, 1, 10000);
-      this.cameraPos = new THREE.Vector3(0, this.roomConfig.innerScale.height * 3.2, this.roomConfig.innerScale.depth);
-      this.camera.position.set(this.cameraPos.x, this.cameraPos.y, this.cameraPos.z);
-    },
-    */
-    initControls(){
-      //this.controls = new OrbitControls(this.camera, this.renderer.domElement );
-      //this.controls.enableDamping = false;
-      //this.controls.dampingFactor = 0.5;
     },
     initLight(){
       let directionLight = LIGHT.getDirectionLight(0, 100, 0);
@@ -201,24 +172,11 @@ export default {
           this.app.notify("服务器错误，请重试", "error");
         });
     },
-    /*
-    setCameraPos(){
-      this.camera.position.set(this.cameraPos.x, this.cameraPos.y, this.cameraPos.z);
-    },
-    */
-    setTargetPos(){
-      this.controls.target = new THREE.Vector3(
-        Number(this.player.status.x),
-        Number(this.player.status.y),
-        Number(this.player.status.z)
-      );
-      this.controls.update();
-    },
     onWheel(event){
       this.player.cameraMove(-event.wheelDelta);
     },
     onMouseDown(event){
-      if (event.button == 1)
+      if (event.button === 1)
       {
         this.globalConfig.mouseDown = true;
         this.globalConfig.mousePosition = {
@@ -248,7 +206,7 @@ export default {
       }
     },
     onMouseUp(event){
-      if (event.button == 1)
+      if (event.button === 1)
       {
         this.globalConfig.mouseDown = false;
       }
@@ -258,7 +216,6 @@ export default {
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
       this.labelRenderer.setSize(this.container.clientWidth, this.container.clientHeight);
-      //this.setTargetPos();
     },
     onClick(event){
       console.log("被点击了");
@@ -284,7 +241,7 @@ export default {
       let obj = intersects[0].object;
       console.log("被点击的对象是：");
       console.log(obj);
-      if (obj.onClick != undefined)
+      if (obj.onClick !== undefined)
       {
         // 触发物品的点击事件
         obj.onClick();
@@ -312,7 +269,7 @@ export default {
       mouseFollower.style.top = window.event.clientY + "px";
 
       let obj = intersects[0].object;
-      if (obj.onHover != undefined)
+      if (obj.onHover !== undefined)
       {
         // 根据物品的设定改变提示框的显示
         let message = obj.hoverMessage();
