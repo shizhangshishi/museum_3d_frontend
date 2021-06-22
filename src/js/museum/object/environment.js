@@ -11,7 +11,7 @@ const Factories = {
 
 // 模型地址映射
 const models = {
-  robot: "/models/object/player/robot.fbx"
+  robot: "/models/object/player/robot.FBX"
 }
 
 // 初始位置
